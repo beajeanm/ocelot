@@ -156,6 +156,8 @@ and disabled opacity.
 | `Text`, `Divider` | Typography (size, weight, align, color) and separators |
 | `Button`, `Link` | Variants: primary, secondary, ghost, danger |
 | `Input`, `Textarea`, `Label`, `Select`, `Dropdown` | Forms — `Select` is native (no JS), `Dropdown` is an Alpine-powered listbox |
+| `Checkbox`, `Radio_group`, `Switch` | Toggles and exclusive choices — native inputs with custom styling, no JS |
+| `Progress`, `Spinner` | Task completion bar and loading indicator — pure CSS animation |
 | `Badge`, `Alert` | Status indicators and messages |
 | `Card` | Composable: `Card.Header`, `Card.Body`, `Card.Footer` |
 | `Table` | `Head`, `Body`, `Row`, `HeaderCell`, `Cell` |
@@ -164,6 +166,7 @@ and disabled opacity.
 | `Tooltip` | Hover + keyboard focus, positioned via `aria-describedby` |
 | `Toast` | Self-dismissing notifications (`Toast.Container` + `Toast`) |
 | `Pagination`, `Breadcrumb` | Navigation, with current/disabled states |
+| `Scroll area` | Overflowing content with thin, themeable scrollbars |
 
 Components are modules (`Ocelot.Button`, `Ocelot.Table.Row`, …), each with a
 `createElement` (aliased as `make`) whose optional labeled arguments match the

@@ -948,6 +948,300 @@ let modal_extras = {|
 }
 |}
 
+let checkbox_styles =
+  {|
+.ocelot-checkbox,
+.ocelot-radio,
+.ocelot-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--ocelot-spacing-unit) * 2);
+  font-family: var(--ocelot-font-body);
+  font-size: var(--ocelot-font-size-md);
+  color: var(--ocelot-text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* The real inputs are visually hidden but stay in the layout's
+   accessibility tree: focus, keyboard activation, and form submission
+   all remain native. */
+.ocelot-checkbox__input,
+.ocelot-radio__input,
+.ocelot-switch__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ocelot-checkbox:has(input:disabled),
+.ocelot-radio:has(input:disabled),
+.ocelot-switch:has(input:disabled) {
+  opacity: var(--ocelot-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.ocelot-checkbox__box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  background: var(--ocelot-surface);
+  border: 1px solid var(--ocelot-border-strong);
+  border-radius: var(--ocelot-radius-sm);
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.ocelot-checkbox__indicator {
+  display: block;
+  width: 0.25rem;
+  height: 0.5rem;
+  margin-top: -0.125rem;
+  border: solid oklch(100% 0 0);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transform-origin: center;
+  transition: transform 150ms ease;
+}
+
+.ocelot-checkbox__input:checked + .ocelot-checkbox__box {
+  background: var(--ocelot-primary);
+  border-color: var(--ocelot-primary);
+}
+
+.ocelot-checkbox__input:checked + .ocelot-checkbox__box .ocelot-checkbox__indicator {
+  transform: rotate(45deg) scale(1);
+}
+
+.ocelot-checkbox__input:focus-visible + .ocelot-checkbox__box {
+  outline: 2px solid var(--ocelot-focus-ring);
+  outline-offset: 2px;
+}
+|}
+
+let radio_group_styles =
+  {|
+.ocelot-radio-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(var(--ocelot-spacing-unit) * 2);
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.ocelot-radio-group__legend {
+  padding: 0;
+  font-family: var(--ocelot-font-body);
+  font-size: var(--ocelot-font-size-sm);
+  font-weight: 500;
+  color: var(--ocelot-text-secondary);
+}
+
+.ocelot-radio-group:disabled .ocelot-radio {
+  opacity: var(--ocelot-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.ocelot-radio__circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  background: var(--ocelot-surface);
+  border: 1px solid var(--ocelot-border-strong);
+  border-radius: 50%;
+  transition: border-color 150ms ease;
+}
+
+.ocelot-radio__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--ocelot-primary);
+  transform: scale(0);
+  transition: transform 150ms ease;
+}
+
+.ocelot-radio__input:checked + .ocelot-radio__circle {
+  border-color: var(--ocelot-primary);
+}
+
+.ocelot-radio__input:checked + .ocelot-radio__circle .ocelot-radio__dot {
+  transform: scale(1);
+}
+
+.ocelot-radio__input:focus-visible + .ocelot-radio__circle {
+  outline: 2px solid var(--ocelot-focus-ring);
+  outline-offset: 2px;
+}
+|}
+
+let switch_styles =
+  {|
+.ocelot-switch__track {
+  position: relative;
+  flex: none;
+  width: 2.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  background: var(--ocelot-border-strong);
+  transition: background-color 200ms ease;
+}
+
+.ocelot-switch__thumb {
+  position: absolute;
+  top: 0.125rem;
+  left: 0.125rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--ocelot-surface);
+  box-shadow: var(--ocelot-shadow-sm);
+  transition: transform 200ms ease;
+}
+
+.ocelot-switch__input:checked + .ocelot-switch__track {
+  background: var(--ocelot-primary);
+}
+
+.ocelot-switch__input:checked + .ocelot-switch__track .ocelot-switch__thumb {
+  transform: translateX(1rem);
+}
+
+.ocelot-switch__input:focus-visible + .ocelot-switch__track {
+  outline: 2px solid var(--ocelot-focus-ring);
+  outline-offset: 2px;
+}
+|}
+
+let progress_styles =
+  {|
+.ocelot-progress {
+  width: 100%;
+  height: 0.5rem;
+  background: var(--ocelot-surface-muted);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.ocelot-progress__indicator {
+  height: 100%;
+  background: var(--ocelot-primary);
+  border-radius: 9999px;
+  transition: width 200ms ease;
+}
+
+.ocelot-progress--indeterminate .ocelot-progress__indicator {
+  width: 40%;
+  animation: ocelot-progress-indeterminate 1.5s ease-in-out infinite;
+}
+
+@keyframes ocelot-progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(250%);
+  }
+}
+|}
+
+let scroll_area_styles =
+  {|
+.ocelot-scroll-area {
+  overflow: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ocelot-border-strong) transparent;
+}
+
+.ocelot-scroll-area--vertical {
+  overflow-y: auto;
+}
+
+.ocelot-scroll-area--horizontal {
+  overflow-x: auto;
+}
+
+.ocelot-scroll-area::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+.ocelot-scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ocelot-scroll-area::-webkit-scrollbar-thumb {
+  background: var(--ocelot-border-strong);
+  border-radius: 9999px;
+}
+
+.ocelot-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: var(--ocelot-text-muted);
+}
+|}
+
+let spinner_styles =
+  {|
+.ocelot-spinner {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--ocelot-spacing-unit) * 2);
+  font-family: var(--ocelot-font-body);
+  font-size: var(--ocelot-font-size-sm);
+  color: var(--ocelot-text-secondary);
+}
+
+.ocelot-spinner__icon {
+  display: inline-block;
+  flex: none;
+  border: 2px solid var(--ocelot-border);
+  border-top-color: var(--ocelot-primary);
+  border-radius: 50%;
+  animation: ocelot-spin 600ms linear infinite;
+}
+
+.ocelot-spinner--sm .ocelot-spinner__icon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.ocelot-spinner--md .ocelot-spinner__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.ocelot-spinner--lg .ocelot-spinner__icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-width: 3px;
+}
+
+@keyframes ocelot-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ocelot-spinner__icon,
+  .ocelot-progress--indeterminate .ocelot-progress__indicator {
+    animation-duration: 1.5s;
+  }
+}
+|}
+
 let all ~(light : Theme.t) ~(dark : Theme.t) : string =
   String.concat "\n\n"
     [
@@ -974,4 +1268,10 @@ let all ~(light : Theme.t) ~(dark : Theme.t) : string =
       toast_styles;
       dropdown_styles;
       modal_extras;
+      checkbox_styles;
+      radio_group_styles;
+      switch_styles;
+      progress_styles;
+      scroll_area_styles;
+      spinner_styles;
     ]

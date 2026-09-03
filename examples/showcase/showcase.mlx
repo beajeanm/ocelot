@@ -160,6 +160,61 @@ let page =
       </section>
 
       <section style="margin: 2rem 0;">
+        <h2>"Checkboxes, Radios & Switches"</h2>
+        <Ocelot.Stack gap=G4>
+          <Ocelot.Stack gap=G2>
+            <Ocelot.Text tag="h3" size=Text.Sm weight=Text.Semibold color=Text.Secondary>"Features"</Ocelot.Text>
+            <Ocelot.Checkbox name="features" value="storage" checked=true>"Extra storage"</Ocelot.Checkbox>
+            <Ocelot.Checkbox name="features" value="support">"Priority support"</Ocelot.Checkbox>
+            <Ocelot.Checkbox name="features" value="domain" disabled=true>"Custom domain"</Ocelot.Checkbox>
+          </Ocelot.Stack>
+          <Ocelot.Radio_group label="Billing plan">
+            <Ocelot.Radio_group.Item name="plan" value="free" checked=true>"Free"</Ocelot.Radio_group.Item>
+            <Ocelot.Radio_group.Item name="plan" value="pro">"Pro"</Ocelot.Radio_group.Item>
+            <Ocelot.Radio_group.Item name="plan" value="enterprise" disabled=true>"Enterprise"</Ocelot.Radio_group.Item>
+          </Ocelot.Radio_group>
+          <Ocelot.Stack gap=G2>
+            <Ocelot.Text tag="h3" size=Text.Sm weight=Text.Semibold color=Text.Secondary>"Notifications"</Ocelot.Text>
+            <Ocelot.Switch name="alerts" checked=true>"Email alerts"</Ocelot.Switch>
+            <Ocelot.Switch name="newsletter">"Weekly newsletter"</Ocelot.Switch>
+            <Ocelot.Switch name="tips" disabled=true>"Product tips (disabled)"</Ocelot.Switch>
+          </Ocelot.Stack>
+        </Ocelot.Stack>
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Progress & Spinner"</h2>
+        <Ocelot.Stack gap=G4>
+          <Ocelot.Stack gap=G2>
+            <Ocelot.Text color=Text.Secondary size=Text.Sm>"Uploading — 70%"</Ocelot.Text>
+            <Ocelot.Progress value=0.7 aria_label="Upload progress" />
+            <Ocelot.Text color=Text.Secondary size=Text.Sm>"Processing — 35%"</Ocelot.Text>
+            <Ocelot.Progress value=0.35 aria_label="Processing" />
+            <Ocelot.Text color=Text.Secondary size=Text.Sm>"Unknown duration"</Ocelot.Text>
+            <Ocelot.Progress indeterminate=true aria_label="Loading" />
+          </Ocelot.Stack>
+          <Ocelot.Flex gap=G4 align=Center>
+            <Ocelot.Spinner />
+            <Ocelot.Spinner size=Sm>"Fetching data…"</Ocelot.Spinner>
+            <Ocelot.Spinner size=Lg />
+          </Ocelot.Flex>
+        </Ocelot.Stack>
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Scroll Area"</h2>
+        <Ocelot.Scroll_area max_height="8rem" class_="ocelot-box--border ocelot-box--padding-3">
+          <Ocelot.Stack gap=G2>
+            <Ocelot.Text>"This content overflows its 8rem-tall container: scroll it with the thin, themeable scrollbar."</Ocelot.Text>
+            <Ocelot.Text color=Text.Secondary>"Ocelot is a library of UI components that render to plain HTML strings on the server."</Ocelot.Text>
+            <Ocelot.Text color=Text.Secondary>"Components are accessible by default, with semantic markup and ARIA attributes."</Ocelot.Text>
+            <Ocelot.Text color=Text.Secondary>"Styles are embedded in the library and emitted as a single style tag — no CSS build step."</Ocelot.Text>
+            <Ocelot.Text color=Text.Secondary>"Themes are records of design tokens compiled to CSS custom properties."</Ocelot.Text>
+          </Ocelot.Stack>
+        </Ocelot.Scroll_area>
+      </section>
+
+      <section style="margin: 2rem 0;">
         <h2>"Table"</h2>
         <Ocelot.Table>
           <Ocelot.Table.Head>

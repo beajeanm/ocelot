@@ -4,3 +4,7 @@
     ones so no stray spaces appear in the rendered markup. *)
 let class_value parts =
   parts |> List.filter (fun s -> s <> "") |> String.concat " "
+
+(** [true] when the element is [JSX.null] — i.e. the JSX runtime passed no
+    children. Structural comparison only: elements are plain data. *)
+let is_null_element (el : JSX.element) = el = JSX.null

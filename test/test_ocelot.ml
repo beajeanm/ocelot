@@ -102,6 +102,141 @@ let test_select_disabled_option () =
   check_contains "disabled option" html
     "<option value=\"b\" disabled>Bob</option>"
 
+(* --- Form controls & indicators --- *)
+
+let test_checkbox () =
+  let html =
+    render
+      (Checkbox.createElement ~name:"tos" ~value:"accepted" ~checked:true
+         ~children:(JSX.string "Accept terms")
+         ())
+  in
+  check_contains "checkbox type" html "type=\"checkbox\"";
+  check_contains "checked attr" html "checked";
+  check_contains "label text" html "Accept terms";
+  check_contains "box class" html "ocelot-checkbox__box";
+  check_contains "indicator class" html "ocelot-checkbox__indicator";
+  check_contains "decorative aria-hidden" html "aria-hidden=\"true\""
+
+let test_checkbox_disabled () =
+  let html = render (Checkbox.createElement ~name:"x" ~disabled:true ()) in
+  check_contains "disabled attr" html "disabled";
+  match html_contains html "ocelot-checkbox__label" with
+  | true -> Alcotest.fail "no children should mean no label span"
+  | false -> ()
+
+let test_radio_group () =
+  let html =
+    render
+      (Radio_group.createElement ~label:"Plan"
+         ~children:
+           (JSX.list
+              [
+                Radio_group.Item.createElement ~name:"plan" ~value:"free"
+                  ~checked:true ~children:(JSX.string "Free") ();
+                Radio_group.Item.createElement ~name:"plan" ~value:"pro"
+                  ~children:(JSX.string "Pro") ();
+                Radio_group.Item.createElement ~name:"plan" ~value:"enterprise"
+                  ~disabled:true ~children:(JSX.string "Enterprise") ();
+              ])
+         ())
+  in
+  check_contains "radiogroup role" html "role=\"radiogroup\"";
+  check_contains "legend" html "<legend";
+  check_contains "group label" html "Plan</legend>";
+  check_contains "radio type" html "type=\"radio\"";
+  check_contains "radio role label" html "aria-label=\"Plan\"";
+  check_contains "checked attr" html "checked";
+  check_contains "disabled attr" html "disabled";
+  check_contains "circle class" html "ocelot-radio__circle";
+  check_contains "dot class" html "ocelot-radio__dot"
+
+let test_radio_group_disabled () =
+  let html =
+    render
+      (Radio_group.createElement ~aria_label:"Pick one" ~disabled:true
+         ~children:
+           (Radio_group.Item.createElement ~name:"pick" ~value:"a"
+              ~children:(JSX.string "A") ())
+         ())
+  in
+  check_contains "fieldset disabled" html " disabled";
+  match html_contains html "<legend" with
+  | true -> Alcotest.fail "aria_label only must not render a legend"
+  | false -> ()
+
+let test_switch () =
+  let html =
+    render
+      (Switch.createElement ~name:"alerts" ~checked:true
+         ~children:(JSX.string "Email alerts")
+         ())
+  in
+  check_contains "switch role" html "role=\"switch\"";
+  check_contains "checkbox underneath" html "type=\"checkbox\"";
+  check_contains "checked attr" html "checked";
+  check_contains "label text" html "Email alerts";
+  check_contains "track class" html "ocelot-switch__track";
+  check_contains "thumb class" html "ocelot-switch__thumb"
+
+let test_progress () =
+  let html =
+    render (Progress.createElement ~value:0.7 ~aria_label:"Upload" ())
+  in
+  check_contains "progressbar role" html "role=\"progressbar\"";
+  check_contains "valuenow" html "aria-valuenow=\"70\"";
+  check_contains "valuemin" html "aria-valuemin=\"0\"";
+  check_contains "valuemax" html "aria-valuemax=\"100\"";
+  check_contains "aria label" html "aria-label=\"Upload\"";
+  check_contains "indicator width" html "width: 70%"
+
+let test_progress_indeterminate () =
+  let html = render (Progress.createElement ~indeterminate:true ()) in
+  check_contains "indeterminate class" html "ocelot-progress--indeterminate";
+  match html_contains html "aria-valuenow" with
+  | true -> Alcotest.fail "indeterminate progress must not set aria-valuenow"
+  | false -> ()
+
+let test_scroll_area () =
+  let html =
+    render
+      (Scroll_area.createElement ~max_height:"12rem"
+         ~children:(JSX.string "Overflowing content")
+         ())
+  in
+  check_contains "scroll class" html "ocelot-scroll-area";
+  check_contains "vertical class" html "ocelot-scroll-area--vertical";
+  check_contains "max height style" html "max-height: 12rem";
+  check_contains "content" html "Overflowing content"
+
+let test_scroll_area_horizontal () =
+  let html =
+    render (Scroll_area.createElement ~orientation:Both ~children:JSX.null ())
+  in
+  check_contains "horizontal class" html "ocelot-scroll-area--horizontal";
+  check_contains "both classes" html
+    "ocelot-scroll-area--vertical ocelot-scroll-area--horizontal"
+
+let test_spinner () =
+  let html = render (Spinner.createElement ~size:Lg ()) in
+  check_contains "status role" html "role=\"status\"";
+  check_contains "default label" html "aria-label=\"Loading\"";
+  check_contains "size class" html "ocelot-spinner--lg";
+  check_contains "icon class" html "ocelot-spinner__icon"
+
+let test_spinner_with_label () =
+  let html =
+    render
+      (Spinner.createElement ~size:Sm
+         ~children:(JSX.string "Fetching data…")
+         ())
+  in
+  check_contains "visible text" html "Fetching data…";
+  check_contains "sm class" html "ocelot-spinner--sm";
+  match html_contains html "aria-label" with
+  | true -> Alcotest.fail "visible text must not duplicate an aria-label"
+  | false -> ()
+
 let test_table_structure () =
   let head =
     Table.Head.createElement
@@ -302,6 +437,23 @@ let () =
           Alcotest.test_case "table structure" `Quick test_table_structure;
           Alcotest.test_case "breadcrumb aria" `Quick test_breadcrumb_aria;
           Alcotest.test_case "pagination aria" `Quick test_pagination_aria;
+        ] );
+      ( "form controls & indicators",
+        [
+          Alcotest.test_case "checkbox" `Quick test_checkbox;
+          Alcotest.test_case "checkbox disabled" `Quick test_checkbox_disabled;
+          Alcotest.test_case "radio group" `Quick test_radio_group;
+          Alcotest.test_case "radio group disabled" `Quick
+            test_radio_group_disabled;
+          Alcotest.test_case "switch" `Quick test_switch;
+          Alcotest.test_case "progress" `Quick test_progress;
+          Alcotest.test_case "progress indeterminate" `Quick
+            test_progress_indeterminate;
+          Alcotest.test_case "scroll area" `Quick test_scroll_area;
+          Alcotest.test_case "scroll area horizontal" `Quick
+            test_scroll_area_horizontal;
+          Alcotest.test_case "spinner" `Quick test_spinner;
+          Alcotest.test_case "spinner with label" `Quick test_spinner_with_label;
         ] );
       ( "alpine components",
         [
