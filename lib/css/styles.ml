@@ -1242,6 +1242,117 @@ let spinner_styles =
 }
 |}
 
+let calendar_styles =
+  {|
+.ocelot-calendar {
+  display: inline-block;
+  font-family: var(--ocelot-font-body);
+  color: var(--ocelot-text-primary);
+}
+
+.ocelot-calendar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--ocelot-spacing-unit) * 2);
+  margin-bottom: calc(var(--ocelot-spacing-unit) * 3);
+}
+
+.ocelot-calendar__title {
+  font-size: var(--ocelot-font-size-md);
+  font-weight: 600;
+  color: var(--ocelot-text-heading);
+}
+
+.ocelot-calendar__nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--ocelot-radius-sm);
+  background: transparent;
+  color: var(--ocelot-text-secondary);
+  font-size: 1.25rem;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.ocelot-calendar__nav:hover {
+  background: var(--ocelot-surface-muted);
+  color: var(--ocelot-text-primary);
+}
+
+.ocelot-calendar__nav:focus-visible {
+  outline: 2px solid var(--ocelot-focus-ring);
+  outline-offset: 2px;
+}
+
+.ocelot-calendar__grid {
+  border-collapse: collapse;
+}
+
+.ocelot-calendar__weekday {
+  padding: 0 0 calc(var(--ocelot-spacing-unit) * 1);
+  font-size: var(--ocelot-font-size-sm);
+  font-weight: 500;
+  color: var(--ocelot-text-muted);
+  text-align: center;
+}
+
+.ocelot-calendar__cell {
+  padding: 2px;
+  text-align: center;
+}
+
+.ocelot-calendar__day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: var(--ocelot-radius-md);
+  background: transparent;
+  color: var(--ocelot-text-primary);
+  font-family: var(--ocelot-font-body);
+  font-size: var(--ocelot-font-size-sm);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.ocelot-calendar__day:hover {
+  background: var(--ocelot-surface-muted);
+}
+
+.ocelot-calendar__day:focus-visible {
+  outline: 2px solid var(--ocelot-focus-ring);
+  outline-offset: 2px;
+}
+
+.ocelot-calendar__day--selected,
+.ocelot-calendar__day--selected:hover {
+  background: var(--ocelot-primary);
+  color: oklch(100% 0 0);
+  font-weight: 600;
+}
+
+.ocelot-calendar__day--today {
+  box-shadow: inset 0 0 0 1px var(--ocelot-primary);
+}
+
+.ocelot-calendar__day--selected.ocelot-calendar__day--today {
+  box-shadow: inset 0 0 0 1px oklch(100% 0 0);
+}
+
+.ocelot-calendar__day:disabled {
+  opacity: var(--ocelot-disabled-opacity);
+  cursor: not-allowed;
+}
+|}
+
 let all ~(light : Theme.t) ~(dark : Theme.t) : string =
   String.concat "\n\n"
     [
@@ -1274,4 +1385,5 @@ let all ~(light : Theme.t) ~(dark : Theme.t) : string =
       progress_styles;
       scroll_area_styles;
       spinner_styles;
+      calendar_styles;
     ]

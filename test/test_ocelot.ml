@@ -237,6 +237,83 @@ let test_spinner_with_label () =
   | true -> Alcotest.fail "visible text must not duplicate an aria-label"
   | false -> ()
 
+(* --- Calendar --- *)
+
+let count_occurrences html substring =
+  let sub_len = String.length substring in
+  let html_len = String.length html in
+  let rec aux i acc =
+    if i + sub_len > html_len then acc
+    else if String.sub html i sub_len = substring then
+      aux (i + sub_len) (acc + 1)
+    else aux (i + 1) acc
+  in
+  aux 0 0
+
+let test_calendar_structure () =
+  (* June 2025 starts on a Sunday. *)
+  let html =
+    render
+      (Calendar.createElement ~year:2025 ~month:6 ~week_start:Calendar.Sun ())
+  in
+  check_contains "grid role" html "role=\"grid\"";
+  check_contains "caption" html
+    "<caption class=\"ocelot-sr-only\">June 2025</caption>";
+  check_contains "title" html "June 2025</div>";
+  check_contains "weekday abbr" html "abbr=\"Sunday\"";
+  check_contains "day button" html ">15</button>";
+  check_contains "day aria label" html "aria-label=\"15 June 2025\"";
+  (* Sunday start + Sunday the 1st: no leading padding, and the 30 days
+     end on a Monday, leaving 5 trailing blanks — 5 empty cells total. *)
+  Alcotest.(check int)
+    "empty cells" 5
+    (count_occurrences html "ocelot-calendar__cell--empty")
+
+let test_calendar_monday_start () =
+  (* June 2025: 6 leading blanks (Mon start) + 30 days + 6 trailing. *)
+  let html = render (Calendar.createElement ~year:2025 ~month:6 ()) in
+  Alcotest.(check int)
+    "empty cells" 12
+    (count_occurrences html "ocelot-calendar__cell--empty");
+  check_contains "mo header first" html "Mo</th>";
+  check_contains "su header last" html "Su</th>"
+
+let test_calendar_states () =
+  let html =
+    render
+      (Calendar.createElement ~year:2025 ~month:6 ~name:"date"
+         ~selected:[ 3; 15 ] ~today:15 ~disabled:[ 20 ] ())
+  in
+  check_contains "selected cell" html "aria-selected=\"true\"";
+  check_contains "selected class" html "ocelot-calendar__day--selected";
+  check_contains "today cell" html "aria-current=\"date\"";
+  check_contains "today class" html "ocelot-calendar__day--today";
+  check_contains "disabled day" html " disabled";
+  check_contains "disabled cell" html "aria-disabled=\"true\"";
+  check_contains "submit type" html "type=\"submit\"";
+  check_contains "form name" html "name=\"date\"";
+  check_contains "iso value" html "value=\"2025-06-15\""
+
+let test_calendar_leap_year () =
+  (* February 2024 has 29 days; the 29th must render as a day. *)
+  let html = render (Calendar.createElement ~year:2024 ~month:2 ()) in
+  check_contains "feb 29" html ">29</button>";
+  let html = render (Calendar.createElement ~year:2025 ~month:2 ()) in
+  match html_contains html ">29</button>" with
+  | true -> Alcotest.fail "2025-02 must not have a 29th"
+  | false -> ()
+
+let test_calendar_nav () =
+  let html =
+    render
+      (Calendar.createElement ~year:2025 ~month:6 ~prev_href:"/2025/05"
+         ~next_href:"/2025/07" ())
+  in
+  check_contains "prev link" html "href=\"/2025/05\"";
+  check_contains "prev label" html "aria-label=\"Previous month\"";
+  check_contains "next link" html "href=\"/2025/07\"";
+  check_contains "next label" html "aria-label=\"Next month\""
+
 let test_table_structure () =
   let head =
     Table.Head.createElement
@@ -454,6 +531,16 @@ let () =
             test_scroll_area_horizontal;
           Alcotest.test_case "spinner" `Quick test_spinner;
           Alcotest.test_case "spinner with label" `Quick test_spinner_with_label;
+        ] );
+      ( "calendar",
+        [
+          Alcotest.test_case "structure (Sunday start)" `Quick
+            test_calendar_structure;
+          Alcotest.test_case "monday start alignment" `Quick
+            test_calendar_monday_start;
+          Alcotest.test_case "selection states" `Quick test_calendar_states;
+          Alcotest.test_case "leap year" `Quick test_calendar_leap_year;
+          Alcotest.test_case "navigation" `Quick test_calendar_nav;
         ] );
       ( "alpine components",
         [

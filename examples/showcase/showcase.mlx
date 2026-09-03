@@ -215,6 +215,23 @@ let page =
       </section>
 
       <section style="margin: 2rem 0;">
+        <h2>"Calendar"</h2>
+        <Ocelot.Flex gap=G8 align=Start>
+          <Ocelot.Stack gap=G2>
+            <Ocelot.Text color=Text.Secondary size=Text.Sm>"Monday-first, multi-day selection, disabled days — day buttons submit their ISO date."</Ocelot.Text>
+            <Ocelot.Calendar
+              year=2025 month=6 name="date"
+              selected=[3; 15] today=15 disabled=[20; 26]
+              prev_href="#" next_href="#" />
+          </Ocelot.Stack>
+          <Ocelot.Stack gap=G2>
+            <Ocelot.Text color=Text.Secondary size=Text.Sm>"Sunday-first weeks, no form field."</Ocelot.Text>
+            <Ocelot.Calendar year=2025 month=6 week_start=Calendar.Sun today=1 />
+          </Ocelot.Stack>
+        </Ocelot.Flex>
+      </section>
+
+      <section style="margin: 2rem 0;">
         <h2>"Table"</h2>
         <Ocelot.Table>
           <Ocelot.Table.Head>

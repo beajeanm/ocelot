@@ -158,6 +158,7 @@ and disabled opacity.
 | `Input`, `Textarea`, `Label`, `Select`, `Dropdown` | Forms — `Select` is native (no JS), `Dropdown` is an Alpine-powered listbox |
 | `Checkbox`, `Radio_group`, `Switch` | Toggles and exclusive choices — native inputs with custom styling, no JS |
 | `Progress`, `Spinner` | Task completion bar and loading indicator — pure CSS animation |
+| `Calendar` | Month grid of day buttons; selected/today/disabled days, prev/next via server round-trips |
 | `Badge`, `Alert` | Status indicators and messages |
 | `Card` | Composable: `Card.Header`, `Card.Body`, `Card.Footer` |
 | `Table` | `Head`, `Body`, `Row`, `HeaderCell`, `Cell` |
