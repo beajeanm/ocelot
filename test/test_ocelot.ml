@@ -275,6 +275,13 @@ let test_calendar_monday_start () =
   Alcotest.(check int)
     "empty cells" 12
     (count_occurrences html "ocelot-calendar__cell--empty");
+  (* Regression: the empty-cell class must be merged into a single class
+     attribute, not a second one (browsers ignore duplicates). *)
+  check_contains "merged empty class" html
+    "class=\"ocelot-calendar__cell ocelot-calendar__cell--empty\"";
+  Alcotest.(check int)
+    "no duplicate class attr" 0
+    (count_occurrences html "class=\"ocelot-calendar__cell--empty\"");
   check_contains "mo header first" html "Mo</th>";
   check_contains "su header last" html "Su</th>"
 

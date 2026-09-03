@@ -105,17 +105,15 @@ let createElement ~year ~month ?name ?(selected = []) ?(today : int option)
     @ List.init trailing (fun _ -> None)
   in
   let cell day =
-    let base_attrs =
-      [
-        ("class", `String "ocelot-calendar__cell"); ("role", `String "gridcell");
-      ]
-    in
     match day with
     | None ->
         JSX.node "td"
-          (("aria-hidden", `String "true")
-          :: ("class", `String "ocelot-calendar__cell--empty")
-          :: base_attrs)
+          [
+            ( "class",
+              `String "ocelot-calendar__cell ocelot-calendar__cell--empty" );
+            ("role", `String "gridcell");
+            ("aria-hidden", `String "true");
+          ]
           []
     | Some d ->
         let iso = Printf.sprintf "%04d-%02d-%02d" year month d in
@@ -151,7 +149,13 @@ let createElement ~year ~month ?name ?(selected = []) ?(today : int option)
           JSX.node "button" (List.rev !btn_attrs)
             [ JSX.string (string_of_int d) ]
         in
-        let td_attrs = ref base_attrs in
+        let td_attrs =
+          ref
+            [
+              ("class", `String "ocelot-calendar__cell");
+              ("role", `String "gridcell");
+            ]
+        in
         if is_selected then
           td_attrs := ("aria-selected", `String "true") :: !td_attrs;
         if Some d = today then
