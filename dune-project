@@ -27,4 +27,6 @@
    (>= 3.24))
   (html_of_jsx
    (>= 0.1.0))
+  (calendar
+   (>= 3.0.0))
   (alcotest :with-test)))

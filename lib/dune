@@ -3,4 +3,4 @@
 (library
  (name ocelot)
  (public_name ocelot)
- (libraries html_of_jsx))
+ (libraries html_of_jsx calendar))

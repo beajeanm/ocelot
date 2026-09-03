@@ -35,7 +35,8 @@ Ocelot is not yet on opam. For now, pin it from this repository:
 opam pin add ocelot .
 ```
 
-Dependencies: `ocaml` ≥ 5.0, `dune` ≥ 3.24, and `html_of_jsx` (runtime).
+Dependencies: `ocaml` ≥ 5.0, `dune` ≥ 3.24, `html_of_jsx` (runtime), and
+`calendar` (used by `Ocelot.Calendar` for month lengths and weekdays).
 The mlx dialect is **not** a dependency of the library — you only need it if
 you want to author your pages in JSX syntax (as in the examples below).
 

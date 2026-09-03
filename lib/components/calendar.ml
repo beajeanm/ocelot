@@ -11,11 +11,15 @@
     Month navigation is a server round-trip: pass [prev_href] and
     [next_href] and the header renders accessible previous/next links.
 
-    Date math (leap years, month lengths, weekday of a date) is pure
-    arithmetic on the proleptic Gregorian calendar — no [Unix] time, no
-    impurity, deterministic tests. *)
+    Date math (month lengths, weekday of the first day) is delegated to
+    the [calendar] library ([CalendarLib.Date]). Note that it follows
+    the historical mixed Julian/Gregorian calendar — dates before
+    1582-10-15 are Julian — which is irrelevant for any realistic UI
+    month but differs from a proleptic-Gregorian computation. *)
 
 type week_start = Mon | Sun
+
+module Date = CalendarLib.Date
 
 let month_names =
   [|
@@ -33,32 +37,21 @@ let month_names =
     "December";
   |]
 
-let weekday_names =
-  [|
-    "Monday"; "Tuesday"; "Wednesday"; "Thursday"; "Friday"; "Saturday"; "Sunday";
-  |]
+(* Days in month, via [CalendarLib.Date]. *)
+let days_in_month y m = Date.days_in_month (Date.make_year_month y m)
 
-let is_leap_year y = (y mod 4 = 0 && y mod 100 <> 0) || y mod 400 = 0
+(* Weekday index, 0 = Sunday .. 6 = Saturday. *)
+let day_index = function
+  | Date.Sun -> 0
+  | Date.Mon -> 1
+  | Date.Tue -> 2
+  | Date.Wed -> 3
+  | Date.Thu -> 4
+  | Date.Fri -> 5
+  | Date.Sat -> 6
 
-let days_in_month y m =
-  match m with
-  | 2 -> if is_leap_year y then 29 else 28
-  | 4 | 6 | 9 | 11 -> 30
-  | _ -> 31
-
-(* Days since 1970-01-01 — Howard Hinnant's [days_from_civil]. *)
-let days_from_civil y m d =
-  let y' = if m <= 2 then y - 1 else y in
-  let era = (if y' >= 0 then y' else y' - 399) / 400 in
-  let yoe = y' - (era * 400) in
-  let mp = (m + 9) mod 12 in
-  let doy = (((153 * mp) + 2) / 5) + d - 1 in
-  let doe = (yoe * 365) + (yoe / 4) - (yoe / 100) + doy in
-  (era * 146097) + doe - 719468
-
-(* Weekday of a date: 0 = Sunday .. 6 = Saturday (1970-01-01 was a
-   Thursday). *)
-let weekday y m d = (days_from_civil y m d + 4) mod 7
+(* Weekday of a date as 0 = Sunday .. 6 = Saturday. *)
+let weekday y m d = day_index (Date.day_of_week (Date.make y m d))
 
 (* Short and full weekday header labels for a given week start. *)
 let weekday_labels = function
