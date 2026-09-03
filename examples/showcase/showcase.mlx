@@ -1,0 +1,281 @@
+(* Ocelot component showcase.
+
+   Renders a sample page exercising every available component in both
+   light and dark themes (toggle the data-ocelot-theme attribute with the
+   button in the header). Build and run:
+
+     dune exec examples/showcase/showcase.exe > showcase.html *)
+
+open Ocelot
+
+let page_title = "Ocelot Component Showcase"
+
+(* Inline script: toggles the theme attribute on the root element. *)
+let toggle_theme_script =
+  JSX.unsafe
+    {|
+(function () {
+  var root = document.documentElement;
+  root.setAttribute('data-ocelot-theme', 'light');
+  window.ocelotToggleTheme = function () {
+    var current = root.getAttribute('data-ocelot-theme');
+    root.setAttribute('data-ocelot-theme', current === 'dark' ? 'light' : 'dark');
+  };
+})();
+|}
+
+let theme_toggle =
+  JSX.node "button"
+    [ ("type", `String "button")
+    ; ("class", `String "ocelot-button ocelot-button--secondary")
+    ; ("onclick", `String "ocelotToggleTheme()") ]
+    [ JSX.string "Toggle theme" ]
+
+let tabs =
+  [
+    { Tabs.id = "overview"; label = "Overview";
+      panel = (fun () ->
+          <Ocelot.Text color=Text.Secondary>
+            "Everything you need to know, in one place."
+          </Ocelot.Text>) };
+    { Tabs.id = "specs"; label = "Specifications";
+      panel = (fun () ->
+          <Ocelot.Text color=Text.Secondary>
+            "Technical details and configuration options."
+          </Ocelot.Text>) };
+    { Tabs.id = "reviews"; label = "Reviews";
+      panel = (fun () ->
+          <Ocelot.Text color=Text.Secondary>
+            "What people are saying about it."
+          </Ocelot.Text>) };
+  ]
+
+let select_options =
+  [
+    { Select.value = "ocaml"; label = "OCaml"; disabled = false };
+    { Select.value = "reason"; label = "Reason"; disabled = false };
+    { Select.value = "rescript"; label = "ReScript"; disabled = true };
+  ]
+
+let dropdown_options =
+  [ ("ocaml", "OCaml"); ("reason", "Reason"); ("fsharp", "F#"); ("sml", "Standard ML") ]
+
+let page =
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>(JSX.string page_title)</title>
+      <script>(toggle_theme_script)</script>
+      (Ocelot.Css.render ())
+      (Ocelot.Alpine.script ())
+    </head>
+    <body
+      style="padding: 2rem; font-family: var(--ocelot-font-body); color: var(--ocelot-text-primary); background: var(--ocelot-background); max-width: 64rem; margin: 0 auto;">
+      <Ocelot.Flex justify=Between align=Center>
+        <h1>(JSX.string page_title)</h1>
+        (theme_toggle)
+      </Ocelot.Flex>
+      <Ocelot.Divider />
+
+      <section style="margin: 2rem 0;">
+        <h2>"Buttons"</h2>
+        <Ocelot.Flex gap=G3>
+          <Ocelot.Button variant=Primary>"Primary"</Ocelot.Button>
+          <Ocelot.Button variant=Secondary>"Secondary"</Ocelot.Button>
+          <Ocelot.Button variant=Ghost>"Ghost"</Ocelot.Button>
+          <Ocelot.Button variant=Danger>"Danger"</Ocelot.Button>
+          <Ocelot.Button variant=Primary disabled=true>"Disabled"</Ocelot.Button>
+        </Ocelot.Flex>
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Typography"</h2>
+        <Ocelot.Stack gap=G2>
+          <Ocelot.Text tag="h3" size=Text.Xl weight=Text.Bold color=Text.Heading>"Heading Text"</Ocelot.Text>
+          <Ocelot.Text color=Text.Secondary>"Secondary body text for descriptions."</Ocelot.Text>
+          <Ocelot.Text color=Text.Muted size=Text.Sm>"Small muted caption text."</Ocelot.Text>
+        </Ocelot.Stack>
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Badges"</h2>
+        <Ocelot.Flex gap=G2>
+          <Ocelot.Badge variant=Primary>"Primary"</Ocelot.Badge>
+          <Ocelot.Badge variant=Secondary>"Secondary"</Ocelot.Badge>
+          <Ocelot.Badge variant=Success>"Success"</Ocelot.Badge>
+          <Ocelot.Badge variant=Warning>"Warning"</Ocelot.Badge>
+          <Ocelot.Badge variant=Danger>"Danger"</Ocelot.Badge>
+          <Ocelot.Badge variant=Info>"Info"</Ocelot.Badge>
+        </Ocelot.Flex>
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Alerts"</h2>
+        <Ocelot.Stack gap=G3>
+          <Ocelot.Alert variant=Success>"Your changes have been saved successfully."</Ocelot.Alert>
+          <Ocelot.Alert variant=Warning>"Please review your input before continuing."</Ocelot.Alert>
+          <Ocelot.Alert variant=Danger>"An error occurred while processing your request."</Ocelot.Alert>
+          <Ocelot.Alert variant=Info>"This is an informational message for the user."</Ocelot.Alert>
+        </Ocelot.Stack>
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Card"</h2>
+        <Ocelot.Card shadow=Card.Md>
+          <Ocelot.Card.Header>
+            <Ocelot.Text tag="h3" weight=Text.Semibold color=Text.Heading>"Card Title"</Ocelot.Text>
+          </Ocelot.Card.Header>
+          <Ocelot.Card.Body>
+            "This is a card body with some content inside. Cards can contain headers, bodies, and footers."
+          </Ocelot.Card.Body>
+          <Ocelot.Card.Footer>
+            <Ocelot.Flex justify=End>
+              <Ocelot.Button variant=Primary>"Action"</Ocelot.Button>
+            </Ocelot.Flex>
+          </Ocelot.Card.Footer>
+        </Ocelot.Card>
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Form Inputs"</h2>
+        <Ocelot.Stack gap=G4>
+          <Ocelot.Stack gap=G1>
+            <Ocelot.Label for_="email">"Email address"</Ocelot.Label>
+            <Ocelot.Input type_="email" name="email" id="email" placeholder="you@example.com" />
+          </Ocelot.Stack>
+          <Ocelot.Stack gap=G1>
+            <Ocelot.Label for_="bio">"Bio"</Ocelot.Label>
+            <Ocelot.Textarea name="bio" id="bio" placeholder="Tell us about yourself..." />
+          </Ocelot.Stack>
+          <Ocelot.Stack gap=G1>
+            <Ocelot.Label for_="lang">"Favorite language (native select)"</Ocelot.Label>
+            <Ocelot.Select name="lang" id="lang" options=select_options />
+          </Ocelot.Stack>
+          <Ocelot.Stack gap=G1>
+            <Ocelot.Text color=Text.Muted size=Text.Sm>"Favorite language (Alpine dropdown)"</Ocelot.Text>
+            <Ocelot.Dropdown placeholder="Pick one..." options=dropdown_options aria_label="Languages" />
+          </Ocelot.Stack>
+        </Ocelot.Stack>
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Table"</h2>
+        <Ocelot.Table>
+          <Ocelot.Table.Head>
+            <Ocelot.Table.Row>
+              <Ocelot.Table.HeaderCell>"Name"</Ocelot.Table.HeaderCell>
+              <Ocelot.Table.HeaderCell>"Role"</Ocelot.Table.HeaderCell>
+              <Ocelot.Table.HeaderCell>"Status"</Ocelot.Table.HeaderCell>
+            </Ocelot.Table.Row>
+          </Ocelot.Table.Head>
+          <Ocelot.Table.Body>
+            <Ocelot.Table.Row>
+              <Ocelot.Table.Cell>"Alice"</Ocelot.Table.Cell>
+              <Ocelot.Table.Cell>"Admin"</Ocelot.Table.Cell>
+              <Ocelot.Table.Cell><Ocelot.Badge variant=Success>"Active"</Ocelot.Badge></Ocelot.Table.Cell>
+            </Ocelot.Table.Row>
+            <Ocelot.Table.Row>
+              <Ocelot.Table.Cell>"Bob"</Ocelot.Table.Cell>
+              <Ocelot.Table.Cell>"Editor"</Ocelot.Table.Cell>
+              <Ocelot.Table.Cell><Ocelot.Badge variant=Warning>"Pending"</Ocelot.Badge></Ocelot.Table.Cell>
+            </Ocelot.Table.Row>
+          </Ocelot.Table.Body>
+        </Ocelot.Table>
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Tabs"</h2>
+        <Ocelot.Tabs aria_label="Product information" tabs=tabs />
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Accordion"</h2>
+        <Ocelot.Accordion>
+          <Ocelot.Accordion.Item title="What is Ocelot?">
+            <Ocelot.Text color=Text.Secondary>
+              "A themable library of UI components for server-side HTML, written in OCaml."
+            </Ocelot.Text>
+          </Ocelot.Accordion.Item>
+          <Ocelot.Accordion.Item title="Do I need JavaScript?">
+            <Ocelot.Text color=Text.Secondary>
+              "Only for interactive components: Alpine.js (~15kb) powers tabs, accordions, modals, toasts, tooltips, and dropdowns."
+            </Ocelot.Text>
+          </Ocelot.Accordion.Item>
+          <Ocelot.Accordion.Item open_=true title="How do I switch themes?">
+            <Ocelot.Text color=Text.Secondary>
+              "Toggle the data-ocelot-theme attribute between light and dark - try the button at the top of this page."
+            </Ocelot.Text>
+          </Ocelot.Accordion.Item>
+        </Ocelot.Accordion>
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Modal"</h2>
+        <Ocelot.Modal
+          title="Confirm deletion"
+          trigger=(<Ocelot.Button variant=Danger>"Delete project"</Ocelot.Button>)
+          content=(
+            <Ocelot.Stack gap=G4>
+              <Ocelot.Text>
+                "This action cannot be undone. All project data will be permanently removed."
+              </Ocelot.Text>
+              <Ocelot.Flex justify=End gap=G2>
+                <Ocelot.Button variant=Ghost>"Cancel"</Ocelot.Button>
+                <Ocelot.Button variant=Danger>"Yes, delete it"</Ocelot.Button>
+              </Ocelot.Flex>
+            </Ocelot.Stack>) />
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Tooltip"</h2>
+        <Ocelot.Flex gap=G4>
+          <Ocelot.Tooltip text="Helpful extra information appears on hover and focus." focusable=true>
+            "Hover or focus me"
+          </Ocelot.Tooltip>
+          <Ocelot.Tooltip text="This one appears below the trigger." position=Tooltip.Bottom>
+            <Ocelot.Button variant=Ghost>"Button with tooltip"</Ocelot.Button>
+          </Ocelot.Tooltip>
+        </Ocelot.Flex>
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Pagination"</h2>
+        <Ocelot.Pagination>
+          <Ocelot.Pagination.Item is_disabled=true>"Previous"</Ocelot.Pagination.Item>
+          <Ocelot.Pagination.Item is_current=true>"1"</Ocelot.Pagination.Item>
+          <Ocelot.Pagination.Item href="#">"2"</Ocelot.Pagination.Item>
+          <Ocelot.Pagination.Item href="#">"3"</Ocelot.Pagination.Item>
+          <Ocelot.Pagination.Ellipsis />
+          <Ocelot.Pagination.Item href="#">"Next"</Ocelot.Pagination.Item>
+        </Ocelot.Pagination>
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Breadcrumb"</h2>
+        <Ocelot.Breadcrumb>
+          <Ocelot.Breadcrumb.Item href="/">"Home"</Ocelot.Breadcrumb.Item>
+          <Ocelot.Breadcrumb.Item href="/docs">"Documentation"</Ocelot.Breadcrumb.Item>
+          <Ocelot.Breadcrumb.Item is_current=true>"Components"</Ocelot.Breadcrumb.Item>
+        </Ocelot.Breadcrumb>
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Links"</h2>
+        <Ocelot.Flex gap=G4>
+          <Ocelot.Link href="https://example.com">"Default link"</Ocelot.Link>
+          <Ocelot.Link href="https://example.com" variant=Muted>"Muted link"</Ocelot.Link>
+          <Ocelot.Link href="https://example.com" external_=true>"External link →"</Ocelot.Link>
+        </Ocelot.Flex>
+      </section>
+
+      <Ocelot.Toast.Container>
+        <Ocelot.Toast variant=Success>"Project saved successfully."</Ocelot.Toast>
+        <Ocelot.Toast variant=Warning duration=8000>"Sticky a little longer."</Ocelot.Toast>
+      </Ocelot.Toast.Container>
+    </body>
+  </html>
+
+let () =
+  let html = JSX.render page in
+  Printf.printf "%s\n" html

@@ -1,0 +1,21 @@
+(lang dune 3.24)
+
+(name ocelot-showcase)
+
+;; Standalone dune project for the Ocelot component showcase.
+;;
+;; It is a separate project on purpose: it uses the mlx syntax dialect to
+;; demonstrate the intended end-user experience, while the ocelot library
+;; itself stays plain OCaml with no syntax extensions. Only developers who
+;; want to build/run the showcase need the mlx toolchain (opam packages:
+;; mlx, ocamlmerlin-mlx for editor support, plus ocelot and html_of_jsx).
+;;
+;;   dune exec examples/showcase/showcase.exe > showcase.html
+
+(dialect
+ (name mlx)
+ (implementation
+  (extension mlx)
+  (merlin_reader mlx)
+  (preprocess
+   (run mlx-pp %{input-file}))))

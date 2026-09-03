@@ -1,0 +1,5 @@
+(executable
+ (name showcase)
+ (libraries ocelot html_of_jsx)
+ (preprocess
+  (pps html_of_jsx.ppx)))
