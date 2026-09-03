@@ -178,7 +178,7 @@ every component in both themes:
 
 ```sh
 opam install mlx          # only needed to build the showcase
-dune exec examples/showcase/showcase.exe > showcase.html
+dune exec --root examples/showcase ./showcase.exe > shadow.html
 ```
 
 ## License
