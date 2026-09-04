@@ -5,9 +5,9 @@
 
 type option_item = { value : string; label : string; disabled : bool }
 
-let createElement ?name ?id ?(disabled = false) ?(required = false)
-    ?(multiple = false) ?(class_ = "") ?(attrs : JSX.attribute list = [])
-    ?(children = JSX.null) ~options () =
+let[@ocelot.htmx] createElement ?name ?id ?(disabled = false)
+    ?(required = false) ?(multiple = false) ?(class_ = "")
+    ?(attrs : JSX.attribute list = []) ?(children = JSX.null) ~options () =
   let class_str = Html_util.class_value [ "ocelot-input"; class_ ] in
   let attrs = ("class", `String class_str) :: attrs in
   let attrs =

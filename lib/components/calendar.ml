@@ -76,8 +76,9 @@ let weekday_labels = function
         ("Sa", "Saturday");
       |]
 
-let createElement ~year ~month ?name ?(selected = []) ?(today : int option)
-    ?(disabled = []) ?(week_start = Mon) ?prev_href ?next_href ?(class_ = "")
+let[@ocelot.htmx] createElement ~year ~month ?name ?(selected = [])
+    ?(today : int option) ?(disabled = []) ?(week_start = Mon) ?prev_href
+    ?next_href ?(class_ = "") ?(attrs : JSX.attribute list = [])
     ?(children = JSX.null) () =
   ignore children;
   let month = max 1 (min 12 month) in
@@ -213,6 +214,6 @@ let createElement ~year ~month ?name ?(selected = []) ?(today : int option)
       [ ("class", `String "ocelot-calendar__grid"); ("role", `String "grid") ]
       [ caption; JSX.node "thead" [] [ head_row ]; JSX.node "tbody" [] rows ]
   in
-  JSX.node "div" [ ("class", `String class_str) ] [ header; grid ]
+  JSX.node "div" (("class", `String class_str) :: attrs) [ header; grid ]
 
 let make = createElement

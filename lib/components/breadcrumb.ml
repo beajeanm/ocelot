@@ -2,8 +2,8 @@
     [aria-current="page"] on the current item. The separator between items
     is hidden on the last item via CSS. *)
 
-let createElement ?(class_ = "") ?(attrs : JSX.attribute list = [])
-    ?(children = JSX.null) () =
+let[@ocelot.htmx] createElement ?(class_ = "")
+    ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
   let class_str = Html_util.class_value [ "ocelot-breadcrumb"; class_ ] in
   JSX.node "nav"
     (("class", `String class_str)
@@ -16,7 +16,7 @@ let createElement ?(class_ = "") ?(attrs : JSX.attribute list = [])
     ]
 
 module Item = struct
-  let createElement ?(is_current = false) ?href
+  let[@ocelot.htmx] createElement ?(is_current = false) ?href
       ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
     let link_attrs = [ ("class", `String "ocelot-breadcrumb__link") ] in
     let link_attrs =

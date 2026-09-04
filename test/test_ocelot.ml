@@ -25,6 +25,68 @@ let test_button_primary () =
   check_contains "button variant" html "ocelot-button--primary";
   check_contains "button text" html "Click"
 
+let test_button_htmx () =
+  let html =
+    render
+      (Button.createElement ~hx_get:"/api/click" ~hx_target:"#result"
+         ~children:(JSX.string "Click") ())
+  in
+  check_contains "hx-get attr" html "hx-get=\"/api/click\"";
+  check_contains "hx-target attr" html "hx-target=\"#result\""
+
+let test_input_htmx () =
+  let html =
+    render
+      (Input.createElement ~hx_post:"/api/search"
+         ~hx_trigger:"keyup changed delay:500ms" ~type_:"search"
+         ~placeholder:"Search..." ())
+  in
+  check_contains "hx-post attr" html "hx-post=\"/api/search\"";
+  check_contains "hx-trigger attr" html
+    "hx-trigger=\"keyup changed delay:500ms\"";
+  check_contains "input tag" html "<input"
+
+let test_checkbox_htmx () =
+  let html =
+    render
+      (Checkbox.createElement ~hx_get:"/api/toggle" ~name:"notify" ~checked:true
+         ~children:(JSX.string "Enable notifications")
+         ())
+  in
+  check_contains "hx-get attr" html "hx-get=\"/api/toggle\"";
+  check_contains "checkbox type" html "type=\"checkbox\"";
+  check_contains "checked attr" html "checked"
+
+let test_alert_htmx () =
+  let html =
+    render
+      (Alert.createElement ~variant:Success ~hx_swap:"outerHTML"
+         ~children:(JSX.string "Saved!") ())
+  in
+  check_contains "hx-swap attr" html "hx-swap=\"outerHTML\"";
+  check_contains "role alert" html "role=\"alert\"";
+  check_contains "variant class" html "ocelot-alert--success"
+
+let test_box_htmx () =
+  let html =
+    render
+      (Box.createElement ~hx_get:"/api/content" ~hx_target:"#main"
+         ~children:(JSX.string "Loading...") ())
+  in
+  check_contains "hx-get attr" html "hx-get=\"/api/content\"";
+  check_contains "hx-target attr" html "hx-target=\"#main\"";
+  check_contains "box class" html "ocelot-box"
+
+let test_escape_hatch () =
+  (* Verify the old attrs=[Hx.get ...] escape hatch still works *)
+  let html =
+    render
+      (Button.createElement
+         ~attrs:[ ("hx-get", `String "/api/old") ]
+         ~children:(JSX.string "Old") ())
+  in
+  check_contains "escape hatch hx-get" html "hx-get=\"/api/old\""
+
 let test_button_disabled () =
   let html =
     render
@@ -504,6 +566,12 @@ let () =
       ( "foundation",
         [
           Alcotest.test_case "button primary" `Quick test_button_primary;
+          Alcotest.test_case "button htmx" `Quick test_button_htmx;
+          Alcotest.test_case "input htmx" `Quick test_input_htmx;
+          Alcotest.test_case "checkbox htmx" `Quick test_checkbox_htmx;
+          Alcotest.test_case "alert htmx" `Quick test_alert_htmx;
+          Alcotest.test_case "box htmx" `Quick test_box_htmx;
+          Alcotest.test_case "escape hatch" `Quick test_escape_hatch;
           Alcotest.test_case "button disabled" `Quick test_button_disabled;
           Alcotest.test_case "box padding" `Quick test_box_padding;
           Alcotest.test_case "css render" `Quick test_css_render;

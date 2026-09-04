@@ -4,9 +4,9 @@
     JavaScript: clicking the label or pressing Space toggles it, and the
     value submits like any checkbox. *)
 
-let createElement ?name ?value ?(checked = false) ?(disabled = false)
-    ?(required = false) ?id ?(class_ = "") ?(attrs : JSX.attribute list = [])
-    ?(children = JSX.null) () =
+let[@ocelot.htmx] createElement ?name ?value ?(checked = false)
+    ?(disabled = false) ?(required = false) ?id ?(class_ = "")
+    ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
   let class_str = Html_util.class_value [ "ocelot-switch"; class_ ] in
   let attrs = ("class", `String "ocelot-switch__input") :: attrs in
   let attrs =
@@ -45,6 +45,6 @@ let createElement ?name ?value ?(checked = false) ?(disabled = false)
           [ children ];
       ]
   in
-  JSX.node "label" (("class", `String class_str) :: attrs) children
+  JSX.node "label" [ ("class", `String class_str) ] children
 
 let make = createElement

@@ -55,9 +55,8 @@ let tab_panel ~(active : string) (tab : tab) =
   let attrs = if is_active then attrs else ("hidden", `Bool true) :: attrs in
   JSX.node "div" attrs [ tab.panel () ]
 
-let createElement ?(class_ = "") ?(aria_label = "Tabs")
-    ?(active_tab : string option)
-    ?(attrs : JSX.attribute list = [])
+let[@ocelot.htmx] createElement ?(class_ = "") ?(aria_label = "Tabs")
+    ?(active_tab : string option) ?(attrs : JSX.attribute list = [])
     ?(children = JSX.null) ~(tabs : tab list) () =
   let active =
     match active_tab with

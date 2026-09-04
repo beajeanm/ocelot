@@ -13,6 +13,7 @@ depends: [
   "dune" {>= "3.20" & >= "3.24"}
   "html_of_jsx" {>= "0.1.0"}
   "calendar" {>= "3.0.0"}
+  "ppxlib" {>= "0.32.0"}
   "alcotest" {with-test}
   "odoc" {with-doc}
 ]

@@ -1,8 +1,9 @@
 (* Textarea component. *)
 
-let createElement ?name ?(rows = 4) ?placeholder ?(disabled = false)
-    ?(required = false) ?(readonly = false) ?id ?(class_ = "")
-    ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
+let[@ocelot.htmx] createElement ?name ?(rows = 4) ?placeholder
+    ?(disabled = false) ?(required = false) ?(readonly = false) ?id
+    ?(class_ = "") ?(attrs : JSX.attribute list = []) ?(children = JSX.null) ()
+    =
   let class_str = Html_util.class_value [ "ocelot-textarea"; class_ ] in
   let attrs = ("class", `String class_str) :: ("rows", `Int rows) :: attrs in
   let attrs =

@@ -29,4 +29,6 @@
    (>= 0.1.0))
   (calendar
    (>= 3.0.0))
+  (ppxlib
+   (>= 0.32.0))
   (alcotest :with-test)))

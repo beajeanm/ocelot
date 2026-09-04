@@ -8,8 +8,9 @@
 
 type position = Top | Bottom
 
-let createElement ?(position = Top) ?(class_ = "") ?(id : string option)
-    ?(focusable = false) ?(children = JSX.null) ~text () =
+let[@ocelot.htmx] createElement ?(position = Top) ?(class_ = "")
+    ?(id : string option) ?(focusable = false)
+    ?(attrs : JSX.attribute list = []) ?(children = JSX.null) ~text () =
   let tip_id =
     Option.value id ~default:(Alpine_util.derived_id "ocelot-tip-" text)
   in
@@ -42,15 +43,14 @@ let createElement ?(position = Top) ?(class_ = "") ?(id : string option)
       [ JSX.string text ]
   in
   JSX.node "span"
-    [
-      ("class", `String class_str);
-      ("x-data", `String "{ show: false }");
-      ("@mouseenter", `String "show = true");
-      ("@mouseleave", `String "show = false");
-      ("@focusin", `String "show = true");
-      ("@focusout", `String "show = false");
-      ("@keydown.escape", `String "show = false");
-    ]
+    (("class", `String class_str)
+    :: ("x-data", `String "{ show: false }")
+    :: ("@mouseenter", `String "show = true")
+    :: ("@mouseleave", `String "show = false")
+    :: ("@focusin", `String "show = true")
+    :: ("@focusout", `String "show = false")
+    :: ("@keydown.escape", `String "show = false")
+    :: attrs)
     [ trigger; content ]
 
 let make = createElement

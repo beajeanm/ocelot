@@ -3,4 +3,6 @@
 (library
  (name ocelot)
  (public_name ocelot)
- (libraries html_of_jsx calendar))
+ (libraries html_of_jsx calendar)
+ (preprocess
+  (pps ocelot_htmx)))

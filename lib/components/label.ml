@@ -1,6 +1,6 @@
 (* Label component. *)
 
-let createElement ?(for_ : string option) ?(class_ = "")
+let[@ocelot.htmx] createElement ?(for_ : string option) ?(class_ = "")
     ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
   let class_str = Html_util.class_value [ "ocelot-label"; class_ ] in
   let attrs = ("class", `String class_str) :: attrs in

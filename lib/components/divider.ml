@@ -2,7 +2,7 @@
 
 type orientation = Horizontal | Vertical
 
-let createElement ?(orientation = Horizontal) ?(class_ = "")
+let[@ocelot.htmx] createElement ?(orientation = Horizontal) ?(class_ = "")
     ?(attrs : JSX.attribute list = []) () =
   let orient_class =
     match orientation with

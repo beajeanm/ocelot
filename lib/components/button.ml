@@ -14,8 +14,8 @@ let size_to_string = function
   | Md -> "ocelot-button--md"
   | Lg -> "ocelot-button--lg"
 
-let createElement ?(variant = Primary) ?(size = Md) ?(disabled = false) ?type_
-    ?(aria_label : string option) ?(class_ = "")
+let[@ocelot.htmx] createElement ?(variant = Primary) ?(size = Md)
+    ?(disabled = false) ?type_ ?(aria_label : string option) ?(class_ = "")
     ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
   let classes =
     ref

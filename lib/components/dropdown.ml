@@ -16,8 +16,9 @@ let option_to_json ((value, label) : string * string) =
     (Alpine_util.escape_sq value)
     (Alpine_util.escape_sq label)
 
-let createElement ?(class_ = "") ?(aria_label = "Options") ?(id : string option)
-    ?(attrs : JSX.attribute list = []) ?(children = JSX.null) ~placeholder ~(options : (string * string) list) () =
+let[@ocelot.htmx] createElement ?(class_ = "") ?(aria_label = "Options")
+    ?(id : string option) ?(attrs : JSX.attribute list = [])
+    ?(children = JSX.null) ~placeholder ~(options : (string * string) list) () =
   let dd_id =
     Option.value id ~default:(Alpine_util.derived_id "ocelot-dd-" placeholder)
   in

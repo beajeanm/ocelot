@@ -7,9 +7,8 @@
    the page head. The dialog is server-rendered hidden ([x-cloak]) and
    only becomes interactive once Alpine loads. *)
 
-let createElement ?(class_ = "") ?(id : string option)
-    ?(attrs : JSX.attribute list = [])
-    ~title ~trigger ~content () =
+let[@ocelot.htmx] createElement ?(class_ = "") ?(id : string option)
+    ?(attrs : JSX.attribute list = []) ~title ~trigger ~content () =
   let modal_id =
     Option.value id ~default:(Alpine_util.derived_id "ocelot-modal-" title)
   in

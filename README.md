@@ -26,6 +26,8 @@ pipeline.
   without) JavaScript.
 - **Zero CSS build step** — all component styles are embedded in the library
   and emitted as a single `<style>` tag.
+- **Native htmx support** — all components accept htmx attributes (`hx_get`,
+  `hx_post`, `hx_trigger`, etc.) directly as optional labeled arguments.
 
 ## Installation
 
@@ -97,6 +99,38 @@ Run it with `dune exec ./my_page.exe`. Two lines do the wiring:
   component styles.
 - `Ocelot.Alpine.script ()` loads Alpine.js (plus the focus plugin) from the
   CDN. Only needed if your page uses interactive components.
+
+## Native htmx support
+
+Every component natively supports **htmx attributes** as optional labeled
+arguments. Just pass them directly in JSX:
+
+```ocaml
+<Ocelot.Button hx_get="/api/click" hx_target="#result"> "Click" </Ocelot.Button>
+<Ocelot.Input hx_post="/api/search" hx_trigger="keyup changed delay:500ms" />
+<Ocelot.Checkbox hx_get="/api/toggle" ~name:"notify" ~checked:true> "Notify" </Ocelot.Checkbox>
+```
+
+The htmx props are merged into the component's root element attributes, so they
+work with any component. Supported attributes:
+
+```
+hx-get, hx-post, hx-put, hx-patch, hx-delete,
+hx-trigger, hx-target, hx-swap, hx-select, hx-select-oob, hx-swap-oob,
+hx-vals, hx-include, hx-indicator, hx-confirm, hx-disable, hx-disinherit,
+hx-encoding, hx-ext, hx-headers, hx-history, hx-params, hx-sync,
+hx-validate, hx-preserve, hx-prompt, hx-push-url, hx-replace-url,
+hx-request, hx-boost, hx-on
+```
+
+For extension attributes (SSE, WebSocket, etc.) or any attribute not listed
+above, to use the `attrs` parameter:
+
+```ocaml
+Ocelot.Button.createElement ~attrs:[ ("sse-connect", `String "/events") ] ()
+```
+
+The `Hx` module in `lib/hx.ml` provides the same helpers for the escape hatch.
 
 ## Plain OCaml, no syntax extensions
 

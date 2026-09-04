@@ -10,9 +10,9 @@
 module Item = struct
   (* A single radio option with a custom, themeable visual. *)
 
-  let createElement ?name ?value ?(checked = false) ?(disabled = false)
-      ?(required = false) ?id ?(class_ = "") ?(attrs : JSX.attribute list = [])
-      ?(children = JSX.null) () =
+  let[@ocelot.htmx] createElement ?name ?value ?(checked = false)
+      ?(disabled = false) ?(required = false) ?id ?(class_ = "")
+      ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
     let class_str = Html_util.class_value [ "ocelot-radio"; class_ ] in
     let attrs = ("class", `String "ocelot-radio__input") :: attrs in
     let attrs =
@@ -47,7 +47,7 @@ module Item = struct
             [ children ];
         ]
     in
-    JSX.node "label" (("class", `String class_str) :: attrs) children
+    JSX.node "label" [ ("class", `String class_str) ] children
 
   let make = createElement
 end
@@ -55,9 +55,9 @@ end
 (* The group wrapper: a [fieldset role="radiogroup"] with an optional
     visible legend ([label]) or an accessible name only ([aria_label]). *)
 
-let createElement ?(label : string option) ?(aria_label : string option)
-    ?(disabled = false) ?(class_ = "") ?(attrs : JSX.attribute list = [])
-    ?(children = JSX.null) () =
+let[@ocelot.htmx] createElement ?(label : string option)
+    ?(aria_label : string option) ?(disabled = false) ?(class_ = "")
+    ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
   let class_str = Html_util.class_value [ "ocelot-radio-group"; class_ ] in
   let accessible_name =
     match label with Some l -> Some l | None -> aria_label

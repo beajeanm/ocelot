@@ -14,8 +14,9 @@ let variant_to_string (v : variant) =
   | Danger -> "ocelot-alert--danger"
   | Info -> "ocelot-alert--info"
 
-let createElement ?(variant = Info) ?(class_ = "") ?(duration = 5000)
-    ?(children = JSX.null) () =
+let[@ocelot.htmx] createElement ?(variant = Info) ?(class_ = "")
+    ?(duration = 5000) ?(attrs : JSX.attribute list = []) ?(children = JSX.null)
+    () =
   let class_str =
     Html_util.class_value
       [ "ocelot-alert ocelot-toast"; variant_to_string variant; class_ ]
@@ -30,7 +31,7 @@ let createElement ?(variant = Info) ?(class_ = "") ?(duration = 5000)
       ]
       [ JSX.string "✕" ]
   in
-  let attrs =
+  let root_attrs =
     [
       ("class", `String class_str);
       ("role", `String "status");
@@ -40,29 +41,29 @@ let createElement ?(variant = Info) ?(class_ = "") ?(duration = 5000)
       ("x-transition.opacity", `Bool true);
     ]
   in
-  let attrs =
+  let root_attrs =
     if duration > 0 then
       ( "x-init",
         `String
           (Printf.sprintf "setTimeout(() => visible = false, %d)" duration) )
-      :: attrs
-    else attrs
+      :: root_attrs
+    else root_attrs
   in
-  JSX.node "div" attrs [ children; dismiss ]
+  JSX.node "div" (root_attrs @ attrs) [ children; dismiss ]
 
 let make = createElement
 
 module Container = struct
-  let createElement ?(class_ = "") ?(children = JSX.null) () =
+  let[@ocelot.htmx] createElement ?(class_ = "")
+      ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
     let class_str =
       Html_util.class_value [ "ocelot-toast-container"; class_ ]
     in
     JSX.node "div"
-      [
-        ("class", `String class_str);
-        ("role", `String "region");
-        ("aria-label", `String "Notifications");
-      ]
+      (("class", `String class_str)
+      :: ("role", `String "region")
+      :: ("aria-label", `String "Notifications")
+      :: attrs)
       [ children ]
 
   let make = createElement

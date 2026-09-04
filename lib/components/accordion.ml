@@ -7,7 +7,8 @@
    JavaScript disabled. *)
 
 module Item = struct
-  let createElement ?(open_ = false) ?(class_ = "") ?(id : string option)
+  let[@ocelot.htmx] createElement ?(open_ = false) ?(class_ = "")
+      ?(id : string option) ?(attrs : JSX.attribute list = [])
       ?(children = JSX.null) ~title () =
     let item_id =
       Option.value id ~default:(Alpine_util.derived_id "ocelot-acc-" title)
@@ -48,17 +49,15 @@ module Item = struct
       Html_util.class_value [ "ocelot-accordion__item"; class_ ]
     in
     JSX.node "div"
-      [
-        ("class", `String class_str);
-        ("x-data", `String (Printf.sprintf "{ open: %s }" open_str));
-      ]
+      (("class", `String class_str)
+      :: ("x-data", `String (Printf.sprintf "{ open: %s }" open_str))
+      :: attrs)
       [ trigger; panel ]
 
   let make = createElement
 end
 
-let createElement ?(class_ = "")
-    ?(attrs : JSX.attribute list = [])
+let createElement ?(class_ = "") ?(attrs : JSX.attribute list = [])
     ?(children = JSX.null) () =
   let class_str = Html_util.class_value [ "ocelot-accordion"; class_ ] in
   JSX.node "div" (("class", `String class_str) :: attrs) [ children ]

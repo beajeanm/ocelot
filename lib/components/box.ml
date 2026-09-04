@@ -41,9 +41,9 @@ let shadow_to_string = function
 
 let class_of_option f opt = Option.map f opt
 
-let createElement ?padding ?margin ?radius ?shadow ?border ?bg ?(class_ = "")
-    ?(attrs : JSX.attribute list = [])
-    ?(children = JSX.null) () =
+let[@ocelot.htmx] createElement ?padding ?margin ?radius ?shadow ?border ?bg
+    ?(class_ = "") ?(attrs : JSX.attribute list = []) ?(children = JSX.null) ()
+    =
   let classes = ref [ "ocelot-box"; class_ ] in
   let add_opt f opt = Option.iter (fun v -> classes := f v :: !classes) opt in
   add_opt padding_to_string padding;

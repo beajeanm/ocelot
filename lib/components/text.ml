@@ -43,9 +43,9 @@ let color_to_string = function
   | Warning -> "ocelot-text--color-warning"
   | Info -> "ocelot-text--color-info"
 
-let createElement ?(tag = "p") ?size ?weight ?align ?color ?(class_ = "")
-    ?(attrs : JSX.attribute list = [])
-    ?(children = JSX.null) () =
+let[@ocelot.htmx] createElement ?(tag = "p") ?size ?weight ?align ?color
+    ?(class_ = "") ?(attrs : JSX.attribute list = []) ?(children = JSX.null) ()
+    =
   let classes = ref [ "ocelot-text"; class_ ] in
   Option.iter (fun s -> classes := size_to_string s :: !classes) size;
   Option.iter (fun w -> classes := weight_to_string w :: !classes) weight;

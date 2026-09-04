@@ -1,0 +1,6 @@
+(library
+ (name ocelot_htmx)
+ (kind ppx_rewriter)
+ (libraries ppxlib)
+ (preprocess
+  (pps ppxlib.metaquot)))

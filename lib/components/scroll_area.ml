@@ -9,17 +9,19 @@ let orientation_classes = function
   | Horizontal -> [ "ocelot-scroll-area--horizontal" ]
   | Both -> [ "ocelot-scroll-area--vertical"; "ocelot-scroll-area--horizontal" ]
 
-let createElement ?(max_height : string option) ?(orientation = Vertical)
-    ?(class_ = "") ?(children = JSX.null) () =
+let[@ocelot.htmx] createElement ?(max_height : string option)
+    ?(orientation = Vertical) ?(class_ = "") ?(attrs : JSX.attribute list = [])
+    ?(children = JSX.null) () =
   let class_str =
     Html_util.class_value
       (("ocelot-scroll-area" :: orientation_classes orientation) @ [ class_ ])
   in
-  let attrs = ref [ ("class", `String class_str) ] in
+  let root_attrs = ref [ ("class", `String class_str) ] in
   Option.iter
     (fun h ->
-      attrs := ("style", `String (Printf.sprintf "max-height: %s" h)) :: !attrs)
+      root_attrs :=
+        ("style", `String (Printf.sprintf "max-height: %s" h)) :: !root_attrs)
     max_height;
-  JSX.node "div" (List.rev !attrs) [ children ]
+  JSX.node "div" (List.rev !root_attrs @ attrs) [ children ]
 
 let make = createElement

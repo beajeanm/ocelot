@@ -3,9 +3,9 @@
     stays focusable and clickable (the wrapping [label] forwards clicks),
     so keyboard and screen-reader behaviour are native. *)
 
-let createElement ?name ?value ?(checked = false) ?(disabled = false)
-    ?(required = false) ?id ?(class_ = "") ?(attrs : JSX.attribute list = [])
-    ?(children = JSX.null) () =
+let[@ocelot.htmx] createElement ?name ?value ?(checked = false)
+    ?(disabled = false) ?(required = false) ?id ?(class_ = "")
+    ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
   let class_str = Html_util.class_value [ "ocelot-checkbox"; class_ ] in
   let attrs = ("class", `String "ocelot-checkbox__input") :: attrs in
   let attrs =
@@ -40,6 +40,6 @@ let createElement ?name ?value ?(checked = false) ?(disabled = false)
           [ children ];
       ]
   in
-  JSX.node "label" (("class", `String class_str) :: attrs) children
+  JSX.node "label" [ ("class", `String class_str) ] children
 
 let make = createElement
