@@ -162,7 +162,7 @@ let test_select_disabled_option () =
   check_contains "select tag" html "<select";
   check_contains "option a" html "<option value=\"a\">Alice</option>";
   check_contains "disabled option" html
-    "<option value=\"b\" disabled>Bob</option>"
+    "<option disabled value=\"b\">Bob</option>"
 
 (* --- Form controls & indicators --- *)
 
