@@ -12,10 +12,12 @@ let gap_to_string = function
   | G6 -> "ocelot-stack--gap-6"
   | G8 -> "ocelot-stack--gap-8"
 
-let createElement ?(gap = G2) ?(class_ = "") ?(children = JSX.null) () =
+let createElement ?(gap = G2) ?(class_ = "")
+    ?(attrs : JSX.attribute list = [])
+    ?(children = JSX.null) () =
   let class_str =
     Html_util.class_value [ "ocelot-stack"; gap_to_string gap; class_ ]
   in
-  JSX.node "div" [ ("class", `String class_str) ] [ children ]
+  JSX.node "div" (("class", `String class_str) :: attrs) [ children ]
 
 let make = createElement

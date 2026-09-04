@@ -11,18 +11,23 @@ module Item = struct
   (* A single radio option with a custom, themeable visual. *)
 
   let createElement ?name ?value ?(checked = false) ?(disabled = false)
-      ?(required = false) ?id ?(class_ = "") ?(children = JSX.null) () =
+      ?(required = false) ?id ?(class_ = "") ?(attrs : JSX.attribute list = [])
+      ?(children = JSX.null) () =
     let class_str = Html_util.class_value [ "ocelot-radio"; class_ ] in
-    let attrs = ref [ ("class", `String "ocelot-radio__input") ] in
-    Option.iter (fun n -> attrs := ("name", `String n) :: !attrs) name;
-    Option.iter (fun v -> attrs := ("value", `String v) :: !attrs) value;
-    Option.iter (fun i -> attrs := ("id", `String i) :: !attrs) id;
-    if checked then attrs := ("checked", `Bool true) :: !attrs;
-    if disabled then attrs := ("disabled", `Bool true) :: !attrs;
-    if required then attrs := ("required", `Bool true) :: !attrs;
-    let input =
-      JSX.node "input" (("type", `String "radio") :: List.rev !attrs) []
+    let attrs = ("class", `String "ocelot-radio__input") :: attrs in
+    let attrs =
+      match name with Some n -> ("name", `String n) :: attrs | None -> attrs
     in
+    let attrs =
+      match value with Some v -> ("value", `String v) :: attrs | None -> attrs
+    in
+    let attrs =
+      match id with Some i -> ("id", `String i) :: attrs | None -> attrs
+    in
+    let attrs = if checked then ("checked", `Bool true) :: attrs else attrs in
+    let attrs = if disabled then ("disabled", `Bool true) :: attrs else attrs in
+    let attrs = if required then ("required", `Bool true) :: attrs else attrs in
+    let input = JSX.node "input" (("type", `String "radio") :: attrs) [] in
     let circle =
       JSX.node "span"
         [
@@ -42,7 +47,7 @@ module Item = struct
             [ children ];
         ]
     in
-    JSX.node "label" [ ("class", `String class_str) ] children
+    JSX.node "label" (("class", `String class_str) :: attrs) children
 
   let make = createElement
 end
@@ -51,18 +56,21 @@ end
     visible legend ([label]) or an accessible name only ([aria_label]). *)
 
 let createElement ?(label : string option) ?(aria_label : string option)
-    ?(disabled = false) ?(class_ = "") ?(children = JSX.null) () =
+    ?(disabled = false) ?(class_ = "") ?(attrs : JSX.attribute list = [])
+    ?(children = JSX.null) () =
   let class_str = Html_util.class_value [ "ocelot-radio-group"; class_ ] in
   let accessible_name =
     match label with Some l -> Some l | None -> aria_label
   in
   let attrs =
-    ref [ ("class", `String class_str); ("role", `String "radiogroup") ]
+    ("class", `String class_str) :: ("role", `String "radiogroup") :: attrs
   in
-  Option.iter
-    (fun n -> attrs := ("aria-label", `String n) :: !attrs)
-    accessible_name;
-  if disabled then attrs := ("disabled", `Bool true) :: !attrs;
+  let attrs =
+    match accessible_name with
+    | Some n -> ("aria-label", `String n) :: attrs
+    | None -> attrs
+  in
+  let attrs = if disabled then ("disabled", `Bool true) :: attrs else attrs in
   let legend =
     match label with
     | Some l ->
@@ -75,6 +83,6 @@ let createElement ?(label : string option) ?(aria_label : string option)
   let children =
     match legend with Some lg -> JSX.list [ lg; children ] | None -> children
   in
-  JSX.node "fieldset" (List.rev !attrs) [ children ]
+  JSX.node "fieldset" attrs [ children ]
 
 let make = createElement

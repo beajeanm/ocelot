@@ -57,8 +57,10 @@ module Item = struct
   let make = createElement
 end
 
-let createElement ?(class_ = "") ?(children = JSX.null) () =
+let createElement ?(class_ = "")
+    ?(attrs : JSX.attribute list = [])
+    ?(children = JSX.null) () =
   let class_str = Html_util.class_value [ "ocelot-accordion"; class_ ] in
-  JSX.node "div" [ ("class", `String class_str) ] [ children ]
+  JSX.node "div" (("class", `String class_str) :: attrs) [ children ]
 
 let make = createElement

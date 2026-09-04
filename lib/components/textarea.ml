@@ -2,17 +2,23 @@
 
 let createElement ?name ?(rows = 4) ?placeholder ?(disabled = false)
     ?(required = false) ?(readonly = false) ?id ?(class_ = "")
-    ?(children = JSX.null) () =
+    ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
   let class_str = Html_util.class_value [ "ocelot-textarea"; class_ ] in
-  let attrs = ref [ ("class", `String class_str); ("rows", `Int rows) ] in
-  Option.iter (fun n -> attrs := ("name", `String n) :: !attrs) name;
-  Option.iter
-    (fun p -> attrs := ("placeholder", `String p) :: !attrs)
-    placeholder;
-  if disabled then attrs := ("disabled", `Bool true) :: !attrs;
-  if required then attrs := ("required", `Bool true) :: !attrs;
-  if readonly then attrs := ("readonly", `Bool true) :: !attrs;
-  Option.iter (fun i -> attrs := ("id", `String i) :: !attrs) id;
-  JSX.node "textarea" (List.rev !attrs) [ children ]
+  let attrs = ("class", `String class_str) :: ("rows", `Int rows) :: attrs in
+  let attrs =
+    match name with Some n -> ("name", `String n) :: attrs | None -> attrs
+  in
+  let attrs =
+    Option.fold ~none:attrs
+      ~some:(fun p -> ("placeholder", `String p) :: attrs)
+      placeholder
+  in
+  let attrs = if disabled then ("disabled", `Bool true) :: attrs else attrs in
+  let attrs = if required then ("required", `Bool true) :: attrs else attrs in
+  let attrs = if readonly then ("readonly", `Bool true) :: attrs else attrs in
+  let attrs =
+    Option.fold ~some:(fun i -> ("id", `String i) :: attrs) id ~none:attrs
+  in
+  JSX.node "textarea" attrs [ children ]
 
 let make = createElement

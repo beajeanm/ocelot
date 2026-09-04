@@ -7,32 +7,40 @@ let shadow_to_string = function
   | Md -> "ocelot-card--shadow-md"
   | Lg -> "ocelot-card--shadow-lg"
 
-let createElement ?shadow ?(class_ = "") ?(children = JSX.null) () =
+let createElement ?shadow ?(class_ = "")
+    ?(attrs : JSX.attribute list = [])
+    ?(children = JSX.null) () =
   let classes = ref [ "ocelot-card"; class_ ] in
   Option.iter (fun s -> classes := shadow_to_string s :: !classes) shadow;
   let class_str = Html_util.class_value !classes in
-  JSX.node "div" [ ("class", `String class_str) ] [ children ]
+  JSX.node "div" (("class", `String class_str) :: attrs) [ children ]
 
 module Header = struct
-  let createElement ?(class_ = "") ?(children = JSX.null) () =
+  let createElement ?(class_ = "")
+      ?(attrs : JSX.attribute list = [])
+      ?(children = JSX.null) () =
     let class_str = Html_util.class_value [ "ocelot-card__header"; class_ ] in
-    JSX.node "div" [ ("class", `String class_str) ] [ children ]
+    JSX.node "div" (("class", `String class_str) :: attrs) [ children ]
 
   let make = createElement
 end
 
 module Body = struct
-  let createElement ?(class_ = "") ?(children = JSX.null) () =
+  let createElement ?(class_ = "")
+      ?(attrs : JSX.attribute list = [])
+      ?(children = JSX.null) () =
     let class_str = Html_util.class_value [ "ocelot-card__body"; class_ ] in
-    JSX.node "div" [ ("class", `String class_str) ] [ children ]
+    JSX.node "div" (("class", `String class_str) :: attrs) [ children ]
 
   let make = createElement
 end
 
 module Footer = struct
-  let createElement ?(class_ = "") ?(children = JSX.null) () =
+  let createElement ?(class_ = "")
+      ?(attrs : JSX.attribute list = [])
+      ?(children = JSX.null) () =
     let class_str = Html_util.class_value [ "ocelot-card__footer"; class_ ] in
-    JSX.node "div" [ ("class", `String class_str) ] [ children ]
+    JSX.node "div" (("class", `String class_str) :: attrs) [ children ]
 
   let make = createElement
 end

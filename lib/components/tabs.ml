@@ -56,7 +56,9 @@ let tab_panel ~(active : string) (tab : tab) =
   JSX.node "div" attrs [ tab.panel () ]
 
 let createElement ?(class_ = "") ?(aria_label = "Tabs")
-    ?(active_tab : string option) ?(children = JSX.null) ~(tabs : tab list) () =
+    ?(active_tab : string option)
+    ?(attrs : JSX.attribute list = [])
+    ?(children = JSX.null) ~(tabs : tab list) () =
   let active =
     match active_tab with
     | Some id -> id
@@ -77,7 +79,7 @@ let createElement ?(class_ = "") ?(aria_label = "Tabs")
   let panels = List.map (tab_panel ~active) tabs in
   let class_str = Html_util.class_value [ "ocelot-tabs"; class_ ] in
   JSX.node "div"
-    [ ("class", `String class_str); ("x-data", `String x_data) ]
+    (("class", `String class_str) :: ("x-data", `String x_data) :: attrs)
     ((tab_list :: panels) @ [ children ])
 
 let make = createElement

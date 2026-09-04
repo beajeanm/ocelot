@@ -17,7 +17,7 @@ let option_to_json ((value, label) : string * string) =
     (Alpine_util.escape_sq label)
 
 let createElement ?(class_ = "") ?(aria_label = "Options") ?(id : string option)
-    ?(children = JSX.null) ~placeholder ~(options : (string * string) list) () =
+    ?(attrs : JSX.attribute list = []) ?(children = JSX.null) ~placeholder ~(options : (string * string) list) () =
   let dd_id =
     Option.value id ~default:(Alpine_util.derived_id "ocelot-dd-" placeholder)
   in
@@ -120,6 +120,6 @@ let createElement ?(class_ = "") ?(aria_label = "Options") ?(id : string option)
       ]
       [ option_template ]
   in
-  JSX.node "div" root_attrs [ trigger; menu; children ]
+  JSX.node "div" (root_attrs @ attrs) [ trigger; menu; children ]
 
 let make = createElement

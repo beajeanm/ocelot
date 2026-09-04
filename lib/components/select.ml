@@ -6,23 +6,31 @@
 type option_item = { value : string; label : string; disabled : bool }
 
 let createElement ?name ?id ?(disabled = false) ?(required = false)
-    ?(multiple = false) ?(class_ = "") ?(children = JSX.null) ~options () =
+    ?(multiple = false) ?(class_ = "") ?(attrs : JSX.attribute list = [])
+    ?(children = JSX.null) ~options () =
   let class_str = Html_util.class_value [ "ocelot-input"; class_ ] in
-  let attrs = ref [ ("class", `String class_str) ] in
-  Option.iter (fun n -> attrs := ("name", `String n) :: !attrs) name;
-  Option.iter (fun i -> attrs := ("id", `String i) :: !attrs) id;
-  if disabled then attrs := ("disabled", `Bool true) :: !attrs;
-  if required then attrs := ("required", `Bool true) :: !attrs;
-  if multiple then attrs := ("multiple", `Bool true) :: !attrs;
+  let attrs = ("class", `String class_str) :: attrs in
+  let attrs =
+    match name with Some n -> ("name", `String n) :: attrs | None -> attrs
+  in
+  let attrs =
+    match id with Some i -> ("id", `String i) :: attrs | None -> attrs
+  in
+  let attrs = if disabled then ("disabled", `Bool true) :: attrs else attrs in
+  let attrs = if required then ("required", `Bool true) :: attrs else attrs in
+  let attrs = if multiple then ("multiple", `Bool true) :: attrs else attrs in
   let option_els =
     List.map
       (fun (opt : option_item) ->
-        let opt_attrs = ref [ ("value", `String opt.value) ] in
-        if opt.disabled then opt_attrs := ("disabled", `Bool true) :: !opt_attrs;
-        JSX.node "option" (List.rev !opt_attrs) [ JSX.string opt.label ])
+        let opt_attrs = [ ("value", `String opt.value) ] in
+        let opt_attrs =
+          if opt.disabled then ("disabled", `Bool true) :: opt_attrs
+          else opt_attrs
+        in
+        JSX.node "option" opt_attrs [ JSX.string opt.label ])
       options
   in
   ignore children;
-  JSX.node "select" (List.rev !attrs) option_els
+  JSX.node "select" attrs option_els
 
 let make = createElement

@@ -15,7 +15,8 @@ let size_to_string = function
   | Lg -> "ocelot-button--lg"
 
 let createElement ?(variant = Primary) ?(size = Md) ?(disabled = false) ?type_
-    ?(aria_label : string option) ?(class_ = "") ?(children = JSX.null) () =
+    ?(aria_label : string option) ?(class_ = "")
+    ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
   let classes =
     ref
       [
@@ -23,7 +24,7 @@ let createElement ?(variant = Primary) ?(size = Md) ?(disabled = false) ?type_
       ]
   in
   let class_str = Html_util.class_value !classes in
-  let attrs = [ ("class", `String class_str) ] in
+  let attrs = ("class", `String class_str) :: attrs in
   let attrs = if disabled then ("disabled", `Bool true) :: attrs else attrs in
   let attrs =
     match type_ with Some t -> ("type", `String t) :: attrs | None -> attrs

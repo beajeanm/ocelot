@@ -1,10 +1,12 @@
 (* Label component. *)
 
-let createElement ?(for_ : string option) ?(class_ = "") ?(children = JSX.null)
-    () =
+let createElement ?(for_ : string option) ?(class_ = "")
+    ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
   let class_str = Html_util.class_value [ "ocelot-label"; class_ ] in
-  let attrs = ref [ ("class", `String class_str) ] in
-  Option.iter (fun f -> attrs := ("for", `String f) :: !attrs) for_;
-  JSX.node "label" (List.rev !attrs) [ children ]
+  let attrs = ("class", `String class_str) :: attrs in
+  let attrs =
+    match for_ with Some f -> ("for", `String f) :: attrs | None -> attrs
+  in
+  JSX.node "label" attrs [ children ]
 
 let make = createElement

@@ -2,10 +2,13 @@
     [aria-current="page"] on the current item. The separator between items
     is hidden on the last item via CSS. *)
 
-let createElement ?(class_ = "") ?(children = JSX.null) () =
+let createElement ?(class_ = "") ?(attrs : JSX.attribute list = [])
+    ?(children = JSX.null) () =
   let class_str = Html_util.class_value [ "ocelot-breadcrumb"; class_ ] in
   JSX.node "nav"
-    [ ("class", `String class_str); ("aria-label", `String "Breadcrumb") ]
+    (("class", `String class_str)
+    :: ("aria-label", `String "Breadcrumb")
+    :: attrs)
     [
       JSX.node "ol"
         [ ("class", `String "ocelot-breadcrumb__list") ]
@@ -13,9 +16,14 @@ let createElement ?(class_ = "") ?(children = JSX.null) () =
     ]
 
 module Item = struct
-  let createElement ?(is_current = false) ?href ?(children = JSX.null) () =
-    let link_attrs = ref [ ("class", `String "ocelot-breadcrumb__link") ] in
-    Option.iter (fun h -> link_attrs := ("href", `String h) :: !link_attrs) href;
+  let createElement ?(is_current = false) ?href
+      ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
+    let link_attrs = [ ("class", `String "ocelot-breadcrumb__link") ] in
+    let link_attrs =
+      match href with
+      | Some h -> ("href", `String h) :: link_attrs
+      | None -> link_attrs
+    in
     let link =
       if is_current then
         JSX.node "span"
@@ -24,7 +32,7 @@ module Item = struct
             ("aria-current", `String "page");
           ]
           [ children ]
-      else JSX.node "a" (List.rev !link_attrs) [ children ]
+      else JSX.node "a" (link_attrs @ attrs) [ children ]
     in
     let sep =
       JSX.node "span"

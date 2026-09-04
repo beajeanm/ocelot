@@ -44,6 +44,7 @@ let color_to_string = function
   | Info -> "ocelot-text--color-info"
 
 let createElement ?(tag = "p") ?size ?weight ?align ?color ?(class_ = "")
+    ?(attrs : JSX.attribute list = [])
     ?(children = JSX.null) () =
   let classes = ref [ "ocelot-text"; class_ ] in
   Option.iter (fun s -> classes := size_to_string s :: !classes) size;
@@ -51,6 +52,6 @@ let createElement ?(tag = "p") ?size ?weight ?align ?color ?(class_ = "")
   Option.iter (fun a -> classes := align_to_string a :: !classes) align;
   Option.iter (fun c -> classes := color_to_string c :: !classes) color;
   let class_str = Html_util.class_value !classes in
-  JSX.node tag [ ("class", `String class_str) ] [ children ]
+  JSX.node tag (("class", `String class_str) :: attrs) [ children ]
 
 let make = createElement

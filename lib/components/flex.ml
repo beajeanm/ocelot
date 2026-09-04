@@ -37,12 +37,13 @@ let justify_to_string (j : justify) =
   | Between -> "ocelot-flex--justify-between"
 
 let createElement ?(direction = Row) ?gap ?align ?justify ?(class_ = "")
+    ?(attrs : JSX.attribute list = [])
     ?(children = JSX.null) () =
   let classes = ref [ "ocelot-flex"; direction_to_string direction; class_ ] in
   Option.iter (fun g -> classes := gap_to_string g :: !classes) gap;
   Option.iter (fun a -> classes := align_to_string a :: !classes) align;
   Option.iter (fun j -> classes := justify_to_string j :: !classes) justify;
   let class_str = Html_util.class_value !classes in
-  JSX.node "div" [ ("class", `String class_str) ] [ children ]
+  JSX.node "div" (("class", `String class_str) :: attrs) [ children ]
 
 let make = createElement
