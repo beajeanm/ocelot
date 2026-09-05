@@ -16,7 +16,7 @@ let size_to_string = function
 
 let[@ocelot.htmx] createElement ?(variant = Primary) ?(size = Md)
     ?(disabled = false) ?type_ ?(aria_label : string option) ?(class_ = "")
-    ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
+    ?onclick ?(attrs : JSX.attribute list = []) ?(children = JSX.null) () =
   let classes =
     ref
       [
@@ -32,6 +32,11 @@ let[@ocelot.htmx] createElement ?(variant = Primary) ?(size = Md)
   let attrs =
     match aria_label with
     | Some l -> ("aria-label", `String l) :: attrs
+    | None -> attrs
+  in
+  let attrs =
+    match onclick with
+    | Some fn -> ("onclick", `String fn) :: attrs
     | None -> attrs
   in
   JSX.node "button" attrs [ children ]
