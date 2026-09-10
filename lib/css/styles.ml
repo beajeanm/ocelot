@@ -1353,6 +1353,346 @@ let calendar_styles =
 }
 |}
 
+let sidebar_styles =
+  {|
+.ocelot-sidebar-layout {
+  display: flex;
+  min-height: 100vh;
+  font-family: var(--ocelot-font-body);
+}
+
+.ocelot-sidebar-layout--right {
+  flex-direction: row-reverse;
+}
+
+.ocelot-sidebar {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 16rem;
+  background: var(--ocelot-surface);
+  border-right: 1px solid var(--ocelot-border);
+  z-index: 40;
+  transition: width 200ms ease, transform 200ms ease;
+}
+
+.ocelot-sidebar--right {
+  border-right: none;
+  border-left: 1px solid var(--ocelot-border);
+}
+
+.ocelot-sidebar__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background: oklch(0% 0 0 / 0.45);
+}
+
+/* Pinned header: optional brand + collapse toggle (+ drawer close). */
+.ocelot-sidebar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--ocelot-spacing-unit) * 2);
+  flex: none;
+  min-height: 3.5rem;
+  padding: calc(var(--ocelot-spacing-unit) * 2) calc(var(--ocelot-spacing-unit) * 3);
+}
+
+.ocelot-sidebar__header--bare {
+  justify-content: flex-end;
+}
+
+.ocelot-sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--ocelot-spacing-unit) * 2);
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 600;
+  color: var(--ocelot-text-heading);
+  white-space: nowrap;
+}
+
+.ocelot-sidebar__toggle,
+.ocelot-sidebar__close,
+.ocelot-sidebar__menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--ocelot-radius-sm);
+  color: var(--ocelot-text-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.ocelot-sidebar__toggle:hover,
+.ocelot-sidebar__close:hover,
+.ocelot-sidebar__menu-btn:hover {
+  background: var(--ocelot-surface-muted);
+  color: var(--ocelot-text-primary);
+}
+
+.ocelot-sidebar__toggle:focus-visible,
+.ocelot-sidebar__close:focus-visible,
+.ocelot-sidebar__menu-btn:focus-visible {
+  outline: 2px solid var(--ocelot-focus-ring);
+  outline-offset: 2px;
+}
+
+.ocelot-sidebar__toggle-icon {
+  display: inline-block;
+  transition: transform 200ms ease;
+}
+
+/* The close button only exists for the small-screen drawer. */
+.ocelot-sidebar__close {
+  display: none;
+}
+
+/* Scrollable navigation region, pinned between header and footer. */
+.ocelot-sidebar__nav {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ocelot-border-strong) transparent;
+  padding: calc(var(--ocelot-spacing-unit) * 2) calc(var(--ocelot-spacing-unit) * 2) calc(var(--ocelot-spacing-unit) * 4);
+}
+
+.ocelot-sidebar__nav::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.ocelot-sidebar__nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ocelot-sidebar__nav::-webkit-scrollbar-thumb {
+  background: var(--ocelot-border-strong);
+  border-radius: 9999px;
+}
+
+.ocelot-sidebar__list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--ocelot-spacing-unit) * 1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ocelot-sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--ocelot-spacing-unit) * 2.5);
+  padding: calc(var(--ocelot-spacing-unit) * 2) calc(var(--ocelot-spacing-unit) * 2.5);
+  border-radius: var(--ocelot-radius-md);
+  color: var(--ocelot-text-secondary);
+  text-decoration: none;
+  font-size: var(--ocelot-font-size-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.ocelot-sidebar__link:hover {
+  background: var(--ocelot-surface-muted);
+  color: var(--ocelot-text-primary);
+}
+
+.ocelot-sidebar__link:focus-visible {
+  outline: 2px solid var(--ocelot-focus-ring);
+  outline-offset: 2px;
+}
+
+.ocelot-sidebar__link[aria-current="page"] {
+  background: color-mix(in oklch, var(--ocelot-primary) 12%, transparent);
+  color: var(--ocelot-primary);
+}
+
+.ocelot-sidebar__link[aria-disabled="true"] {
+  opacity: var(--ocelot-disabled-opacity);
+  pointer-events: none;
+}
+
+.ocelot-sidebar__icon {
+  display: inline-flex;
+  justify-content: center;
+  flex: none;
+  width: 1.25rem;
+}
+
+.ocelot-sidebar__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Pinned optional footer. */
+.ocelot-sidebar__footer {
+  flex: none;
+  padding: calc(var(--ocelot-spacing-unit) * 3);
+  border-top: 1px solid var(--ocelot-border);
+  color: var(--ocelot-text-secondary);
+  font-size: var(--ocelot-font-size-sm);
+}
+
+/* Content area: takes the remaining width, adjusting to the sidebar. */
+.ocelot-sidebar__content {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Mobile bar hosting the hamburger; only visible on small screens. */
+.ocelot-sidebar__mobile-bar {
+  display: none;
+}
+
+/* --- Collapsed rail (via the header toggle) --- */
+.ocelot-sidebar--collapsed {
+  width: 4.5rem;
+}
+
+.ocelot-sidebar--collapsed .ocelot-sidebar__brand,
+.ocelot-sidebar--collapsed .ocelot-sidebar__label,
+.ocelot-sidebar--collapsed .ocelot-sidebar__footer-content {
+  display: none;
+}
+
+.ocelot-sidebar--collapsed .ocelot-sidebar__header--bare {
+  justify-content: center;
+}
+
+.ocelot-sidebar--collapsed .ocelot-sidebar__toggle-icon {
+  transform: rotate(180deg);
+}
+
+.ocelot-sidebar--right .ocelot-sidebar__toggle-icon {
+  transform: rotate(180deg);
+}
+
+.ocelot-sidebar--right.ocelot-sidebar--collapsed .ocelot-sidebar__toggle-icon {
+  transform: none;
+}
+
+/* --- Medium screens: collapse to a rail --- */
+@media (max-width: 60rem) {
+  .ocelot-sidebar {
+    width: 4.5rem;
+  }
+
+  .ocelot-sidebar .ocelot-sidebar__brand,
+  .ocelot-sidebar .ocelot-sidebar__label,
+  .ocelot-sidebar .ocelot-sidebar__footer-content {
+    display: none;
+  }
+
+  .ocelot-sidebar .ocelot-sidebar__header--bare {
+    justify-content: center;
+  }
+
+  .ocelot-sidebar .ocelot-sidebar__toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  .ocelot-sidebar--right .ocelot-sidebar__toggle-icon {
+    transform: none;
+  }
+}
+
+/* --- Small screens: off-canvas drawer --- */
+@media (max-width: 40rem) {
+  .ocelot-sidebar,
+  .ocelot-sidebar--collapsed {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: min(16rem, 85vw);
+    transform: translateX(-101%);
+    z-index: 50;
+    box-shadow: var(--ocelot-shadow-lg);
+  }
+
+  .ocelot-sidebar--right,
+  .ocelot-sidebar--right.ocelot-sidebar--collapsed {
+    left: auto;
+    right: 0;
+    transform: translateX(101%);
+  }
+
+  .ocelot-sidebar--open {
+    transform: translateX(0);
+  }
+
+  .ocelot-sidebar--right.ocelot-sidebar--open {
+    transform: translateX(0);
+  }
+
+  /* Restore the full panel: the medium breakpoint (which also matches
+     here) and any Alpine collapsed state must not hide labels. */
+  .ocelot-sidebar .ocelot-sidebar__brand,
+  .ocelot-sidebar--collapsed .ocelot-sidebar__brand,
+  .ocelot-sidebar .ocelot-sidebar__label,
+  .ocelot-sidebar--collapsed .ocelot-sidebar__label,
+  .ocelot-sidebar .ocelot-sidebar__footer-content,
+  .ocelot-sidebar--collapsed .ocelot-sidebar__footer-content {
+    display: revert;
+  }
+
+  .ocelot-sidebar .ocelot-sidebar__toggle-icon,
+  .ocelot-sidebar--collapsed .ocelot-sidebar__toggle-icon {
+    transform: none;
+  }
+
+  .ocelot-sidebar--right .ocelot-sidebar__toggle-icon,
+  .ocelot-sidebar--right.ocelot-sidebar--collapsed .ocelot-sidebar__toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  .ocelot-sidebar__toggle {
+    display: none;
+  }
+
+  .ocelot-sidebar__close {
+    display: inline-flex;
+  }
+
+  .ocelot-sidebar__mobile-bar {
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    min-height: 3.5rem;
+    padding: calc(var(--ocelot-spacing-unit) * 1.5) calc(var(--ocelot-spacing-unit) * 3);
+    background: var(--ocelot-surface);
+    border-bottom: 1px solid var(--ocelot-border);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ocelot-sidebar {
+    transition: none;
+  }
+
+  .ocelot-sidebar__toggle-icon {
+    transition: none;
+  }
+}
+|}
+
 let all ~(light : Theme.t) ~(dark : Theme.t) : string =
   String.concat "\n\n"
     [
@@ -1384,6 +1724,7 @@ let all ~(light : Theme.t) ~(dark : Theme.t) : string =
       switch_styles;
       progress_styles;
       scroll_area_styles;
+      sidebar_styles;
       spinner_styles;
       calendar_styles;
     ]

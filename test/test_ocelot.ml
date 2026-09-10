@@ -560,6 +560,87 @@ let test_dropdown_aria () =
   check_contains "items state" html
     "items: [ { value: &apos;a&apos;, label: &apos;Alpha&apos; }"
 
+(* --- Sidebar --- *)
+
+let sidebar_items =
+  [
+    {
+      Sidebar.href = "/";
+      label = "Dashboard";
+      icon = None;
+      is_current = true;
+      disabled = false;
+    };
+    {
+      Sidebar.href = "/settings";
+      label = "Settings";
+      icon = None;
+      is_current = false;
+      disabled = true;
+    };
+  ]
+
+let test_sidebar_structure () =
+  let html =
+    render
+      (Sidebar.createElement ~header:(JSX.string "Acme")
+         ~footer:(JSX.string "v1.0") ~children:JSX.null ~items:sidebar_items ())
+  in
+  check_contains "layout wrapper" html "ocelot-sidebar-layout";
+  check_contains "aside region" html "<aside class=\"ocelot-sidebar\"";
+  check_contains "nav label" html "aria-label=\"Sidebar\"";
+  check_contains "nav class" html "ocelot-sidebar__nav";
+  check_contains "list class" html "ocelot-sidebar__list";
+  check_contains "item link" html "href=\"/settings\"";
+  check_contains "current page" html "aria-current=\"page\"";
+  check_contains "disabled item" html "aria-disabled=\"true\"";
+  check_contains "pinned header" html "ocelot-sidebar__header";
+  check_contains "brand" html "ocelot-sidebar__brand";
+  check_contains "pinned footer" html "ocelot-sidebar__footer";
+  check_contains "scroll region" html "ocelot-sidebar__nav";
+  check_contains "content area" html "ocelot-sidebar__content"
+
+let test_sidebar_alpine () =
+  let html = render (Sidebar.createElement ~items:sidebar_items ()) in
+  check_contains "alpine state" html
+    "x-data=\"{ collapsed: false, drawer: false }\"";
+  check_contains "reactive collapse class" html "ocelot-sidebar--collapsed";
+  check_contains "reactive open class" html "ocelot-sidebar--open";
+  check_contains "toggle flips collapse" html
+    "@click=\"collapsed = !collapsed\"";
+  check_contains "toggle expanded" html "aria-expanded=\"true\"";
+  check_contains "reactive toggle label" html ":aria-label=";
+  check_contains "backdrop show" html "x-show=\"drawer\"";
+  check_contains "backdrop click closes" html "@click=\"drawer = false\"";
+  check_contains "backdrop cloaked" html "x-cloak";
+  check_contains "escape closes drawer" html "@keydown.escape.window";
+  check_contains "drawer focus trap" html "x-trap.inert.noscroll=\"drawer\"";
+  check_contains "menu button opens" html "@click=\"drawer = true\"";
+  check_contains "menu button label" html "aria-label=\"Open navigation\"";
+  check_contains "close button" html "aria-label=\"Close navigation\"";
+  check_contains "controls sidebar" html "aria-controls=\"ocelot-sidebar-"
+
+let test_sidebar_collapsed_initial () =
+  let html = render (Sidebar.createElement ~collapsed:true ~items:[] ()) in
+  check_contains "initial collapsed state" html
+    "x-data=\"{ collapsed: true, drawer: false }\"";
+  check_contains "toggle collapsed" html "aria-expanded=\"false\"";
+  check_contains "expand label" html "aria-label=\"Expand sidebar\""
+
+let test_sidebar_right () =
+  let html =
+    render (Sidebar.createElement ~side:Sidebar.Right ~items:sidebar_items ())
+  in
+  check_contains "reversed layout" html "ocelot-sidebar-layout--right";
+  check_contains "right variant" html "ocelot-sidebar--right";
+  check_contains "aside id" html "id=\"ocelot-sidebar-"
+
+let test_sidebar_htmx () =
+  let html =
+    render (Sidebar.createElement ~hx_boost:"true" ~items:sidebar_items ())
+  in
+  check_contains "hx-boost attr" html "hx-boost=\"true\""
+
 let () =
   Alcotest.run "Ocelot"
     [
@@ -627,5 +708,14 @@ let () =
           Alcotest.test_case "toast sticky" `Quick test_toast_sticky;
           Alcotest.test_case "tooltip aria" `Quick test_tooltip_aria;
           Alcotest.test_case "dropdown aria" `Quick test_dropdown_aria;
+        ] );
+      ( "sidebar",
+        [
+          Alcotest.test_case "structure" `Quick test_sidebar_structure;
+          Alcotest.test_case "alpine state & drawer" `Quick test_sidebar_alpine;
+          Alcotest.test_case "collapsed initial state" `Quick
+            test_sidebar_collapsed_initial;
+          Alcotest.test_case "right side" `Quick test_sidebar_right;
+          Alcotest.test_case "htmx attrs" `Quick test_sidebar_htmx;
         ] );
     ]

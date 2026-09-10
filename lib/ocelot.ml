@@ -40,5 +40,6 @@ module Radio_group = Radio_group
 module Switch = Switch
 module Progress = Progress
 module Scroll_area = Scroll_area
+module Sidebar = Sidebar
 module Spinner = Spinner
 module Calendar = Calendar
