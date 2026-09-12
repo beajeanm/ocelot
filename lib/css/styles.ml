@@ -1693,6 +1693,165 @@ let sidebar_styles =
 }
 |}
 
+let header_styles =
+  {|
+.ocelot-header {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--ocelot-spacing-unit) * 2);
+  min-height: 3.5rem;
+  padding: calc(var(--ocelot-spacing-unit) * 1) calc(var(--ocelot-spacing-unit) * 3);
+  background: var(--ocelot-surface);
+  border-bottom: 1px solid var(--ocelot-border);
+  font-family: var(--ocelot-font-body);
+}
+
+.ocelot-header--sticky {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+/* Start region: drawer trigger + brand. */
+.ocelot-header__start {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--ocelot-spacing-unit) * 2);
+  flex: none;
+  min-width: 0;
+}
+
+.ocelot-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--ocelot-spacing-unit) * 1.5);
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ocelot-text-heading);
+  font-weight: 600;
+  font-size: var(--ocelot-font-size-md);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 150ms ease;
+}
+
+.ocelot-header__brand:hover {
+  color: var(--ocelot-primary);
+}
+
+.ocelot-header__brand:focus-visible {
+  outline: 2px solid var(--ocelot-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Center navigation: flexes, scrolls horizontally when cramped. */
+.ocelot-header__nav {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ocelot-header__nav::-webkit-scrollbar {
+  display: none;
+}
+
+.ocelot-header__list {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--ocelot-spacing-unit) * 1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.ocelot-header__link {
+  display: inline-flex;
+  align-items: center;
+  padding: calc(var(--ocelot-spacing-unit) * 1.5) calc(var(--ocelot-spacing-unit) * 2.5);
+  border-radius: var(--ocelot-radius-md);
+  color: var(--ocelot-text-secondary);
+  font-size: var(--ocelot-font-size-sm);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.ocelot-header__link:hover {
+  background: var(--ocelot-surface-muted);
+  color: var(--ocelot-text-primary);
+}
+
+.ocelot-header__link:focus-visible {
+  outline: 2px solid var(--ocelot-focus-ring);
+  outline-offset: 2px;
+}
+
+.ocelot-header__link[aria-current="page"] {
+  background: color-mix(in oklch, var(--ocelot-primary) 12%, transparent);
+  color: var(--ocelot-primary);
+}
+
+.ocelot-header__link[aria-disabled="true"] {
+  opacity: var(--ocelot-disabled-opacity);
+  pointer-events: none;
+}
+
+/* End region: extra content (search, ...) + actions / user menu. */
+.ocelot-header__end {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--ocelot-spacing-unit) * 2);
+  flex: none;
+  margin-left: auto;
+}
+
+/* Sidebar drawer trigger: only visible on small screens, where the
+   Sidebar becomes an off-canvas drawer. */
+.ocelot-header__menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--ocelot-radius-sm);
+  color: var(--ocelot-text-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.ocelot-header__menu-btn:hover {
+  background: var(--ocelot-surface-muted);
+  color: var(--ocelot-text-primary);
+}
+
+.ocelot-header__menu-btn:focus-visible {
+  outline: 2px solid var(--ocelot-focus-ring);
+  outline-offset: 2px;
+}
+
+@media (max-width: 40rem) {
+  .ocelot-header__menu-btn {
+    display: inline-flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ocelot-header__brand,
+  .ocelot-header__link,
+  .ocelot-header__menu-btn {
+    transition: none;
+  }
+}
+|}
+
 let all ~(light : Theme.t) ~(dark : Theme.t) : string =
   String.concat "\n\n"
     [
@@ -1725,6 +1884,7 @@ let all ~(light : Theme.t) ~(dark : Theme.t) : string =
       progress_styles;
       scroll_area_styles;
       sidebar_styles;
+      header_styles;
       spinner_styles;
       calendar_styles;
     ]

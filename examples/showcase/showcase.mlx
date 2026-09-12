@@ -74,6 +74,16 @@ let sidebar_items =
       is_current = false; disabled = true };
   ]
 
+let header_nav_items =
+  [
+    { Header.href = "/search"; label = "Search"; is_current = true; disabled = false };
+    { Header.href = "/docs"; label = "Docs"; is_current = false; disabled = false };
+    { Header.href = "/support"; label = "Support"; is_current = false; disabled = true };
+  ]
+
+let user_menu_options =
+  [ ("profile", "Profile"); ("settings", "Settings"); ("signout", "Sign out") ]
+
 let page =
   <html lang="en">
     <head>
@@ -240,6 +250,50 @@ let page =
           header=(<Stack gap=G0><Text weight=Text.Bold color=Text.Heading>"Ocelot"</Text><Text size=Text.Sm color=Text.Muted>"Admin console"</Text></Stack>)
           footer=(<Text color=Text.Muted>"v0.1.0 — signed in as Ada"</Text>)
           items=sidebar_items>
+          <Stack gap=G4 class_="ocelot-box--padding-8">
+            <Text tag="h3" weight=Text.Semibold color=Text.Heading>"Main content area"</Text>
+            <Text color=Text.Secondary>
+              "This region flexes to the space left by the sidebar — resize the window to watch it adapt."
+            </Text>
+          </Stack>
+        </Sidebar>
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"Header"</h2>
+        <Text color=Text.Secondary size=Text.Sm>
+          "A sticky topbar with a brand link, horizontal nav, and an actions slot —"
+          " here a theme toggle and a Dropdown user menu. The nav scrolls horizontally"
+          " when cramped; it works standalone, with no JavaScript at all."
+        </Text>
+        <Header
+          aria_label="Primary"
+          brand=(<Text weight=Text.Bold color=Text.Heading>"Ocelot"</Text>)
+          items=header_nav_items
+          actions=(<Flex gap=G2 align=Center>(theme_toggle)<Dropdown placeholder="Ada Lovelace" options=user_menu_options aria_label="User menu" /></Flex>) />
+      </section>
+
+      <section style="margin: 2rem 0;">
+        <h2>"App shell (Header + Sidebar)"</h2>
+        <Text color=Text.Secondary size=Text.Sm>
+          "Header and Sidebar compose into the full app shell: the Sidebar's own mobile bar is"
+          " disabled (mobile_bar=false) and its drawer trigger lives in the Header instead —"
+          " shrink the window below 40rem to see the hamburger appear top-left."
+        </Text>
+        <Sidebar
+          id="app-shell-sidebar"
+          aria_label="Main navigation"
+          mobile_bar=false
+          header=(<Stack gap=G0><Text weight=Text.Bold color=Text.Heading>"Ocelot"</Text><Text size=Text.Sm color=Text.Muted>"Admin console"</Text></Stack>)
+          footer=(<Text color=Text.Muted>"v0.1.0 — signed in as Ada"</Text>)
+          items=sidebar_items>
+          <Header
+            sidebar_id="app-shell-sidebar"
+            aria_label="Primary"
+            items=header_nav_items
+            actions=(<Button variant=Primary>"New project"</Button>)>
+            <Input type_="search" name="q" placeholder="Search projects…" />
+          </Header>
           <Stack gap=G4 class_="ocelot-box--padding-8">
             <Text tag="h3" weight=Text.Semibold color=Text.Heading>"Main content area"</Text>
             <Text color=Text.Secondary>

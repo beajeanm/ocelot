@@ -18,6 +18,10 @@
      [x-trap.inert.noscroll], which requires the Alpine focus plugin —
      include [Ocelot.Alpine.script] in the page head.
 
+     When the drawer trigger should live in a [Header] instead (the full
+     app-shell pattern), pass [mobile_bar:false] and wire the Header with
+     [sidebar_id] set to this Sidebar's [id].
+
    Markup is server-rendered in the expanded state, so the navigation is
    usable before Alpine loads (and with JavaScript disabled the drawer
    behavior degrades gracefully, like Modal and Toast). *)
@@ -73,8 +77,8 @@ let item_node (it : item) =
 
 let[@ocelot.htmx] createElement ?(side = Left) ?(aria_label = "Sidebar")
     ?(id : string option) ?(header : JSX.element option)
-    ?(footer : JSX.element option) ?(collapsed = false) ?(class_ = "")
-    ?(attrs : JSX.attribute list = []) ?(children = JSX.null)
+    ?(footer : JSX.element option) ?(collapsed = false) ?(mobile_bar = true)
+    ?(class_ = "") ?(attrs : JSX.attribute list = []) ?(children = JSX.null)
     ~(items : item list) () =
   let sidebar_id =
     Option.value id
@@ -212,15 +216,19 @@ let[@ocelot.htmx] createElement ?(side = Left) ?(aria_label = "Sidebar")
       ]
       [ JSX.node "span" [ ("aria-hidden", `String "true") ] [ JSX.string "☰" ] ]
   in
-  let mobile_bar =
-    JSX.node "div"
-      [ ("class", `String "ocelot-sidebar__mobile-bar") ]
-      [ menu_btn ]
+  let mobile_bar_el =
+    if mobile_bar then
+      [
+        JSX.node "div"
+          [ ("class", `String "ocelot-sidebar__mobile-bar") ]
+          [ menu_btn ];
+      ]
+    else []
   in
   let content =
     JSX.node "div"
       [ ("class", `String "ocelot-sidebar__content") ]
-      [ mobile_bar; children ]
+      (mobile_bar_el @ [ children ])
   in
 
   let layout_class =

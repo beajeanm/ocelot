@@ -203,6 +203,7 @@ and disabled opacity.
 | `Toast` | Self-dismissing notifications (`Toast.Container` + `Toast`) |
 | `Pagination`, `Breadcrumb` | Navigation, with current/disabled states |
 | `Scroll area` | Overflowing content with thin, themeable scrollbars |
+| `Sidebar`, `Header` | App shell: side-pinned nav and topbar (brand, nav links, actions, user menu, sidebar drawer trigger) |
 
 Components are modules (`Ocelot.Button`, `Ocelot.Table.Row`, …), each with a
 `createElement` (aliased as `make`) whose optional labeled arguments match the

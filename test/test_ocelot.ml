@@ -641,6 +641,89 @@ let test_sidebar_htmx () =
   in
   check_contains "hx-boost attr" html "hx-boost=\"true\""
 
+let test_sidebar_mobile_bar_disabled () =
+  let html =
+    render (Sidebar.createElement ~mobile_bar:false ~items:sidebar_items ())
+  in
+  Alcotest.(check bool)
+    "mobile bar omitted" false
+    (html_contains html "ocelot-sidebar__mobile-bar")
+
+(* --- Header --- *)
+
+let header_items =
+  [
+    { Header.href = "/"; label = "Home"; is_current = true; disabled = false };
+    {
+      Header.href = "/docs";
+      label = "Docs";
+      is_current = false;
+      disabled = false;
+    };
+    {
+      Header.href = "/admin";
+      label = "Admin";
+      is_current = false;
+      disabled = true;
+    };
+  ]
+
+let test_header_structure () =
+  let html =
+    render
+      (Header.createElement ~brand:(JSX.string "Acme") ~brand_href:"/home"
+         ~items:header_items ~actions:(JSX.string "Sign in") ())
+  in
+  check_contains "header tag" html "<header class=\"ocelot-header";
+  check_contains "sticky by default" html "ocelot-header--sticky";
+  check_contains "start region" html "ocelot-header__start";
+  check_contains "brand link" html "ocelot-header__brand";
+  check_contains "brand href" html "href=\"/home\"";
+  check_contains "nav label" html "aria-label=\"Main\"";
+  check_contains "list class" html "ocelot-header__list";
+  check_contains "item link" html "href=\"/docs\"";
+  check_contains "current page" html "aria-current=\"page\"";
+  check_contains "disabled item" html "aria-disabled=\"true\"";
+  check_contains "end region" html "ocelot-header__end";
+  check_contains "actions content" html "Sign in"
+
+let test_header_sidebar_trigger () =
+  let html =
+    render
+      (Header.createElement ~sidebar_id:"ocelot-sidebar-42" ~items:header_items
+         ())
+  in
+  check_contains "trigger button" html "ocelot-header__menu-btn";
+  check_contains "trigger label" html "aria-label=\"Open navigation\"";
+  check_contains "controls sidebar" html "aria-controls=\"ocelot-sidebar-42\"";
+  check_contains "trigger opens drawer" html "@click=\"drawer = true\"";
+  check_contains "reactive expanded" html ":aria-expanded=\"drawer";
+  Alcotest.(check bool)
+    "no standalone trigger without sidebar" false
+    (html_contains
+       (render (Header.createElement ~items:header_items ()))
+       "ocelot-header__menu-btn")
+
+let test_header_sticky_off () =
+  let html =
+    render (Header.createElement ~sticky:false ~items:header_items ())
+  in
+  Alcotest.(check bool)
+    "sticky class omitted" false
+    (html_contains html "ocelot-header--sticky")
+
+let test_header_empty_items () =
+  let html = render (Header.createElement ~brand:(JSX.string "Acme") ()) in
+  Alcotest.(check bool)
+    "nav omitted without items" false
+    (html_contains html "<nav")
+
+let test_header_htmx () =
+  let html =
+    render (Header.createElement ~hx_boost:"true" ~items:header_items ())
+  in
+  check_contains "hx-boost attr" html "hx-boost=\"true\""
+
 let () =
   Alcotest.run "Ocelot"
     [
@@ -717,5 +800,16 @@ let () =
             test_sidebar_collapsed_initial;
           Alcotest.test_case "right side" `Quick test_sidebar_right;
           Alcotest.test_case "htmx attrs" `Quick test_sidebar_htmx;
+          Alcotest.test_case "mobile bar disabled" `Quick
+            test_sidebar_mobile_bar_disabled;
+        ] );
+      ( "header",
+        [
+          Alcotest.test_case "structure" `Quick test_header_structure;
+          Alcotest.test_case "sidebar trigger" `Quick
+            test_header_sidebar_trigger;
+          Alcotest.test_case "sticky off" `Quick test_header_sticky_off;
+          Alcotest.test_case "empty items" `Quick test_header_empty_items;
+          Alcotest.test_case "htmx attrs" `Quick test_header_htmx;
         ] );
     ]
