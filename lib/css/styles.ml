@@ -140,6 +140,16 @@ let stack_styles =
 .ocelot-flex--justify-center { justify-content: center; }
 .ocelot-flex--justify-end    { justify-content: flex-end; }
 .ocelot-flex--justify-between { justify-content: space-between; }
+
+/* Responsive row -> column at the small breakpoint (≤ 40rem). */
+@media (max-width: 40rem) {
+  .ocelot-flex--row-responsive { flex-direction: column; }
+}
+
+/* Responsive row -> column at the medium breakpoint (≤ 60rem). */
+@media (max-width: 60rem) {
+  .ocelot-flex--row-responsive--md { flex-direction: column; }
+}
 |}
 
 let text_styles =

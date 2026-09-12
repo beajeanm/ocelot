@@ -6,6 +6,7 @@
 
 type gap = G0 | G1 | G2 | G3 | G4 | G5 | G6 | G8
 type direction = Row | Column
+type breakpoint = Sm | Md
 type align = Start | Center | End
 type justify = Start | Center | End | Between
 
@@ -37,12 +38,20 @@ let justify_to_string (j : justify) =
   | Between -> "ocelot-flex--justify-between"
 
 let[@ocelot.htmx] createElement ?(direction = Row) ?gap ?align ?justify
-    ?(class_ = "") ?(attrs : JSX.attribute list = []) ?(children = JSX.null) ()
-    =
+    ?responsive ?(class_ = "") ?(attrs : JSX.attribute list = [])
+    ?(children = JSX.null) () =
   let classes = ref [ "ocelot-flex"; direction_to_string direction; class_ ] in
   Option.iter (fun g -> classes := gap_to_string g :: !classes) gap;
   Option.iter (fun a -> classes := align_to_string a :: !classes) align;
   Option.iter (fun j -> classes := justify_to_string j :: !classes) justify;
+  let resp_classes =
+    Option.map
+      (function
+        | Sm -> "ocelot-flex--row-responsive"
+        | Md -> "ocelot-flex--row-responsive--md")
+      responsive
+  in
+  Option.iter (fun c -> classes := c :: !classes) resp_classes;
   let class_str = Html_util.class_value !classes in
   JSX.node "div" (("class", `String class_str) :: attrs) [ children ]
 

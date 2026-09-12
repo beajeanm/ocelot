@@ -104,7 +104,7 @@ let page =
 
       <section style="margin: 2rem 0;">
         <h2>"Buttons"</h2>
-        <Flex gap=G3>
+        <Flex gap=G3 responsive=Sm>
           <Button variant=Primary>"Primary"</Button>
           <Button variant=Secondary>"Secondary"</Button>
           <Button variant=Ghost>"Ghost"</Button>
